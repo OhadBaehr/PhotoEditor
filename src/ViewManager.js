@@ -5,13 +5,15 @@ import {
 } from 'react-router-dom'
 import App from './Windows/App';
 import Layers from './Windows/Layers';
+import Tools from './Windows/Tools';
 
 class ViewManager extends Component {
 
   static Views() {
     return {
       App: <App/>,
-      Layers: <Layers/>
+      Layers: <Layers/>,
+      Tools: <Tools/>
     }
   }
 

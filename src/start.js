@@ -57,6 +57,7 @@ app.on('window-all-closed', () => {
 
 function subWindowsOverlay(){
   layersWindow.moveTop()
+  toolsWindow.moveTop()
 }
 
 
@@ -92,11 +93,41 @@ function createLayers() {
   layersWindow.setPosition(mainWindowSize[0]+32,mainWindowSize[1]-layersWindowSize[1]+32)
 }
 
+let toolsWindow
+function createTools() {
+  toolsWindow = new BrowserWindow({
+    frame: false,
+    width: 140,
+    minWidth:100,
+    height: 500,
+    minHeight:200,
+    type: 'toolbar',
+    setSkipTaskbar:true,
+    webPreferences: {
+      worldSafeExecuteJavaScript: true,
+      enableRemoteModule: true,
+      nodeIntegration: true
+    },
+    backgroundColor:'#2e2c29',
+  })
 
+  toolsWindow.loadURL(
+    process.env.ELECTRON_START_URL + '?Layers'
+  )
+  let webContents = toolsWindow.webContents
+  webContents.on('did-finish-load', () => {
+    webContents.setZoomFactor(1)
+  })
+
+  mainWindowSize=mainWindow.getNormalBounds()
+  toolsWindowSize=toolsWindow.getNormalBounds()
+  toolsWindow.setPosition(mainWindowSize.x+8,mainWindowSize.y+toolsWindowSize.y)
+}
 
 app.on('ready', ()=>{
   createWindow()
   createLayers()
+  createTools()
 })
 
 app.on('window-all-closed', () => {
@@ -105,8 +136,8 @@ app.on('window-all-closed', () => {
   }
 })
 
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow()
-  }
-})
+// app.on('activate', () => {
+//   if (mainWindow === null) {
+//     createWindow()
+//   }
+// })
