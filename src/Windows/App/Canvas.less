@@ -1,0 +1,16 @@
+@import '../../constants.less';
+
+.canvas-container {
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+    height         : calc(100vh - @navHeight);
+    overflow-y: auto;
+}
+
+.transparent-background {
+    background         : linear-gradient(45deg, rgba(0, 0, 0, 0.0980392) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.0980392) 75%, rgba(0, 0, 0, 0.0980392) 0), linear-gradient(45deg, rgba(0, 0, 0, 0.0980392) 25%, transparent 25%, transparent 75%, rgba(0, 0, 0, 0.0980392) 75%, rgba(0, 0, 0, 0.0980392) 0), #e6e3e3;
+    background-position: 0px 0, 5px 5px;
+    background-size    : 10px 10px, 10px 10px;
+    touch-action: none;
+}

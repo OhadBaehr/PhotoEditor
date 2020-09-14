@@ -1,0 +1,66 @@
+@import '../../constants.less';
+.app-nav{
+    .nav-container {
+        -webkit-user-select: none;
+        -webkit-app-region : drag;
+        display            : flex;
+        align-items        : center;
+        justify-content    : center;
+        background         : rgb(83, 85, 83);
+        width              : 100%;
+        height             : @navHeight;
+
+        .nav-logo {
+            height:@navHeight;
+        }
+
+        .nav-overflow-container {
+            min-width: 1px;
+            overflow : hidden;
+        }
+        .nav-actions {
+            list-style:none;
+            font-family: "Segoe WPC", "Segoe UI", SFUIText-Light, HelveticaNeue-Light, sans-serif, "Droid Sans Fallback";
+            display    : flex;
+            height     : @navHeight;
+            &.sys-buttons-group {
+                margin-left: auto;
+                padding-left:50px;
+            }
+
+            .nav-button {
+                -webkit-app-region: no-drag;
+                background        : rgb(85, 85, 83);
+                color             : rgb(222, 222, 223);
+                padding           : 6px 10px 6px 10px;
+
+                &:hover {
+                    background: rgb(114, 114, 110);
+                }
+
+                &.setting {
+                    padding-right: 7px;
+                    padding-left : 7px;
+                    font-size    : 12px;
+                }
+
+                &.exit {
+                    &:hover {
+                        background: rgb(218, 16, 16);
+                        color     : white;
+                    }
+                }
+                
+            }
+            .overflow-indicator{
+                color:white;
+                position: absolute;
+                margin-left:8px;
+                .three-dots{
+                    padding-top:7px;
+                    padding-bottom: 7px;
+                }
+            }
+        }
+    }
+}
