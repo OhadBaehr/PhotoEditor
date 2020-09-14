@@ -4,8 +4,44 @@
     display        : flex;
     justify-content: center;
     align-items    : center;
-    height         : calc(100vh - @navHeight);
-    overflow-y: auto;
+    height         : calc(100vh - @navHeight - 9px);
+    overflow: -moz-scrollbars-vertical; 
+    overflow-y: scroll;
+    overflow-x: scroll;
+    &::-webkit-scrollbar {
+        // display : none;
+        width: 1em;
+      }
+  
+      &::-webkit-scrollbar-track {
+        display                   : block;
+        // // display                : none;
+        background                :rgb(83, 85, 83);
+      }
+  
+      &::-webkit-scrollbar-thumb {
+        //display         : none;
+        background-color: rgb(133, 122, 122);
+        outline         : 1px solid slategrey;
+        border-radius   : 6px;
+        border-right    : none;
+        border-left     : none;
+      }
+  
+      &::-webkit-scrollbar-track-piece:start {
+      }
+  
+      &::-webkit-scrollbar-track-piece:vertical {
+          background:rgb(63, 61, 61);
+          border-radius:0 6px 0 0;
+      }
+      &::-webkit-scrollbar-track-piece:horizontal {
+        background:rgb(63, 61, 61);
+        border-radius:0 0 0 6px;
+      }
+      &::-webkit-scrollbar-corner{
+          background:rgb(71, 68, 68);
+      }
 }
 
 .transparent-background {

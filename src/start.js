@@ -10,6 +10,7 @@ let mainWindow
 
 function createWindow() {
   mainWindow = new BrowserWindow({
+    transparent: true, 
     frame: false,
     width: 800,
     minWidth:340,
@@ -20,7 +21,6 @@ function createWindow() {
       enableRemoteModule: true,
       nodeIntegration: true
     },
-    backgroundColor:'#2e2c29',
   })
   
   mainWindow.loadURL(
@@ -31,12 +31,12 @@ function createWindow() {
     webContents.setZoomFactor(1)
   })
   mainWindow.on('closed', () => {
-    layersWindow.hide()
+    subWindowsHide()
     mainWindow = null
   })
 
   mainWindow.on('minimize', () => {
-    layersWindow.hide()
+    //subWindowsHide()
   })
   
   mainWindow.on('restore', () => {
@@ -55,7 +55,13 @@ app.on('window-all-closed', () => {
 })
 
 
+function subWindowsHide(){
+  layersWindow.hide()
+  toolsWindow.hide()
+}
 function subWindowsOverlay(){
+  layersWindow.showInactive()
+  toolsWindow.showInactive()
   layersWindow.moveTop()
   toolsWindow.moveTop()
 }
@@ -65,9 +71,10 @@ function subWindowsOverlay(){
 let layersWindow
 function createLayers() {
   layersWindow = new BrowserWindow({
+    transparent: true, 
     frame: false,
-    width: 200,
-    minWidth:140,
+    width: 160,
+    minWidth:120,
     height: 300,
     minHeight:200,
     type: 'toolbar',
@@ -77,7 +84,6 @@ function createLayers() {
       enableRemoteModule: true,
       nodeIntegration: true
     },
-    backgroundColor:'#2e2c29',
   })
 
   layersWindow.loadURL(
@@ -88,31 +94,32 @@ function createLayers() {
     webContents.setZoomFactor(1)
   })
 
-  mainWindowSize=mainWindow.getSize()
-  layersWindowSize=layersWindow.getSize()
-  layersWindow.setPosition(mainWindowSize[0]+32,mainWindowSize[1]-layersWindowSize[1]+32)
+  mainWindowSize=mainWindow.getNormalBounds()
+  layersWindowSize=layersWindow.getNormalBounds()
+  layersWindow.setPosition(mainWindowSize.width+mainWindowSize.x-layersWindowSize.width-5,mainWindowSize.y+mainWindowSize.height-layersWindowSize.height-5)
 }
 
 let toolsWindow
 function createTools() {
   toolsWindow = new BrowserWindow({
-    frame: false,
-    width: 140,
-    minWidth:100,
-    height: 500,
-    minHeight:200,
+    width: 90,
+    minWidth:40,
+    height: 350,
+    minHeight:60,
     type: 'toolbar',
     setSkipTaskbar:true,
+    transparent: true, 
+    frame: false,
+    resizable:false,
     webPreferences: {
       worldSafeExecuteJavaScript: true,
       enableRemoteModule: true,
       nodeIntegration: true
     },
-    backgroundColor:'#2e2c29',
   })
 
   toolsWindow.loadURL(
-    process.env.ELECTRON_START_URL + '?Layers'
+    process.env.ELECTRON_START_URL + '?Tools'
   )
   let webContents = toolsWindow.webContents
   webContents.on('did-finish-load', () => {
@@ -121,7 +128,7 @@ function createTools() {
 
   mainWindowSize=mainWindow.getNormalBounds()
   toolsWindowSize=toolsWindow.getNormalBounds()
-  toolsWindow.setPosition(mainWindowSize.x+8,mainWindowSize.y+toolsWindowSize.y)
+  toolsWindow.setPosition(mainWindowSize.x+5,mainWindowSize.y+mainWindowSize.height-toolsWindowSize.height-5)
 }
 
 app.on('ready', ()=>{
