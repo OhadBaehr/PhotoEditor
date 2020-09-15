@@ -48,8 +48,14 @@ const Nav=() =>{
     )
   }, [])
   const lastEntry = state.menus[state.menus.length - hiddenElements - 1]
-  // useEffect(() => {
-  // }, []);
+  useEffect(() => {
+    electron.ipcRenderer.on('fullscreen-true', (event, arg) => {
+      setState({fullscreen:true})
+    });
+    electron.ipcRenderer.on('fullscreen-false', (event, arg) => {
+      setState({fullscreen:false})
+    });
+  }, []);
   return (
     <nav className={'app-nav'}>
       <div className={`nav-container`}>
@@ -79,16 +85,14 @@ const Nav=() =>{
             <li className={`nav-button`}
               onClick={() => {
                 var window = electron.remote.getCurrentWindow();
-                window.setFullScreen(false)
-                setState({ fullscreen: false })
+                window.unmaximize()
               }}
             ><VscChromeRestore /></li>
           ) ||
             <li className={`nav-button`}
               onClick={() => {
                 var window = electron.remote.getCurrentWindow();
-                window.setFullScreen(true)
-                setState({ fullscreen: true })
+                window.maximize()
               }}
             ><VscChromeMaximize /></li>
           }

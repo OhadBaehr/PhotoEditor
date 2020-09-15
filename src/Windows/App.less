@@ -1,7 +1,47 @@
+@import '../constants.less';
 .app-container{
-    height:calc(100vh - 7px); //6px + 2px of the border
+    //border-radius: 6px;
+    box-shadow: -1px 2px 0px 18px rgba(0,0,0,0.8);
+    // height:calc(100vh - 7px); //6px + 2px of the border
     background:rgb(31, 31, 30);
     border-right:5px solid  rgb(83, 85, 83);
     border-left:5px solid  rgb(83, 85, 83);
     border-bottom:7px solid  rgb(83, 85, 83);
+    .inner-app-container{
+        height         : calc(100vh - @navHeight - 9px);
+        overflow: -moz-scrollbars-vertical; 
+        overflow-y: scroll;
+        overflow-x: scroll;
+        &::-webkit-scrollbar {
+            // display : none;
+            width: 13px;
+          }
+      
+          &::-webkit-scrollbar-track {
+            display                   : block;
+            // // display                : none;
+            background                :rgb(83, 85, 83);
+          }
+      
+          &::-webkit-scrollbar-thumb {
+            //display         : none;
+            background-color: rgb(133, 122, 122);
+            outline         : 1px solid slategrey;
+            border-radius   : 3px 6px 6px 3px;
+          }
+      
+          &::-webkit-scrollbar-track-piece:start {
+          }
+      
+          &::-webkit-scrollbar-track-piece:vertical {
+              background:rgb(63, 61, 61);
+              border-radius:0 8px 0 0;
+          }
+          &::-webkit-scrollbar-track-piece:horizontal {
+            background:rgb(63, 61, 61);
+          }
+          &::-webkit-scrollbar-corner{
+              background:rgb(71, 68, 68);
+          }
+        }
 }

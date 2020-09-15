@@ -1,16 +1,16 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain} = require('electron')
 
 const path = require('path')
 const url = require('url')
 
+ipcMain.on('runCommand', async (event, arg) => {
+  event.returnValue = await runCommand(arg);
+});
+
 let mainWindow
-
-
-
-
 function createWindow() {
   mainWindow = new BrowserWindow({
-    transparent: true, 
+    transparent: false, 
     frame: false,
     width: 800,
     minWidth:340,
@@ -21,7 +21,9 @@ function createWindow() {
       enableRemoteModule: true,
       nodeIntegration: true
     },
+    backgroundColor:"rgb(31, 31, 30)"
   })
+  
   
   mainWindow.loadURL(
     process.env.ELECTRON_START_URL + '?App'
@@ -29,6 +31,7 @@ function createWindow() {
   let webContents = mainWindow.webContents
   webContents.on('did-finish-load', () => {
     webContents.setZoomFactor(1)
+    subWindowsOverlay()
   })
   mainWindow.on('closed', () => {
     subWindowsHide()
@@ -36,7 +39,7 @@ function createWindow() {
   })
 
   mainWindow.on('minimize', () => {
-    //subWindowsHide()
+    subWindowsHide()
   })
   
   mainWindow.on('restore', () => {
@@ -44,6 +47,20 @@ function createWindow() {
   })
 
   mainWindow.on('focus', () => {
+    subWindowsOverlay()
+  })
+  mainWindow.on('maximize', () => {
+    subWindowsOverlay()
+    mainWindow.webContents.send('fullscreen-true', '');
+  })
+  mainWindow.on('unmaximize', () => {
+    subWindowsOverlay()
+    mainWindow.webContents.send('fullscreen-false', '');
+  })
+  mainWindow.on('enter-full-screen', () => {
+    subWindowsOverlay()
+  })
+  mainWindow.on('move', () => {
     subWindowsOverlay()
   })
 }
@@ -102,7 +119,7 @@ function createLayers() {
 let toolsWindow
 function createTools() {
   toolsWindow = new BrowserWindow({
-    width: 90,
+    width: 70,
     minWidth:40,
     height: 350,
     minHeight:60,
@@ -117,7 +134,7 @@ function createTools() {
       nodeIntegration: true
     },
   })
-
+  
   toolsWindow.loadURL(
     process.env.ELECTRON_START_URL + '?Tools'
   )
@@ -125,6 +142,7 @@ function createTools() {
   webContents.on('did-finish-load', () => {
     webContents.setZoomFactor(1)
   })
+
 
   mainWindowSize=mainWindow.getNormalBounds()
   toolsWindowSize=toolsWindow.getNormalBounds()

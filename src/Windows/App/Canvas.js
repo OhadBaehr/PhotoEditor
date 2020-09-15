@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 import { useAbuse } from 'use-abuse'
+import ToolProperties from './ToolProperties'
 import './Canvas.less'
 
 
@@ -63,8 +64,9 @@ const pencil = (canvas, strokeColor) => {
     onPointerMove: function (e) {
       if (e.width === 1) {
         if (!isDrawing) return;
-        let mouseX = e.clientX - canvas.offsetLeft
-        let mouseY = e.clientY - canvas.offsetTop
+        var rect = e.target.getBoundingClientRect();
+        let mouseX = e.clientX -rect.left
+        let mouseY = e.clientY - rect.top
         let prevCtxOperation = ctx.globalCompositeOperation
         ctx.globalCompositeOperation = 'source-over';
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -96,9 +98,6 @@ const pencil = (canvas, strokeColor) => {
           img = new Image();
           img.src = restore_state
           points.length = 0;
-          let mouseX = e.clientX - canvas.offsetLeft
-          let mouseY = e.clientY - canvas.offsetTop
-          points.push({ x: mouseX, y: mouseY });
           prevCtxOperation === 'source-over' ? ctx.globalCompositeOperation = 'destination-out' : ctx.globalCompositeOperation = 'source-over'
         } else {
           ctx.beginPath();
@@ -149,10 +148,13 @@ const Canvas = () => {
     }
   }, [])
   return (
-    <div className={`canvas-container`} ref={canvasContainer}>
+    <div className={`inner-app-container`}>
+    <ToolProperties/>
+    <div className={`canvas-container`} style={{ minHeight:state.canvasHeight+100}}ref={canvasContainer}>
       <div className={`transparent-background`} style={{ width: state.canvasWidth, height: state.canvasHeight }}>
-        <canvas style={{ position: "absolute" }} ref={canvas} />
+        <canvas ref={canvas} />
       </div>
+    </div>
     </div>
   );
 }
