@@ -119,7 +119,7 @@ function createLayers() {
 let toolsWindow
 function createTools() {
   toolsWindow = new BrowserWindow({
-    width: 70,
+    width: 72,
     minWidth:40,
     height: 350,
     minHeight:60,

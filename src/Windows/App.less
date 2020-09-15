@@ -15,22 +15,34 @@
         &::-webkit-scrollbar {
             // display : none;
             width: 13px;
+            height:13px;
           }
       
           &::-webkit-scrollbar-track {
             display                   : block;
-            // // display                : none;
+            // display                : none;
             background                :rgb(83, 85, 83);
           }
       
-          &::-webkit-scrollbar-thumb {
+          &::-webkit-scrollbar-thumb:vertical {
             //display         : none;
             background-color: rgb(133, 122, 122);
             outline         : 1px solid slategrey;
-            border-radius   : 3px 6px 6px 3px;
+            border:0.7px solid rgb(63, 61, 61);
+            border-left:none;
+            border-radius   : 2px 8px 5px 3px
           }
-      
+          
+          &::-webkit-scrollbar-thumb:horizontal {
+            //display         : none;
+            background-color: rgb(133, 122, 122);
+            outline         : 1px solid slategrey;
+            border:0.7px solid rgb(63, 61, 61);
+            border-top:none;
+            border-radius   : 3px 3px 5px 5px;
+          }
           &::-webkit-scrollbar-track-piece:start {
+                    margin-top      : 0.3px;
           }
       
           &::-webkit-scrollbar-track-piece:vertical {

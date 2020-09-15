@@ -11,12 +11,53 @@
         display            : flex;
         align-items        : center;
         justify-content    : center;
-
+        .mini-icon{
+            -webkit-app-region: no-drag;
+            margin: 2px 8px 0 auto;
+            font-size:10px;
+            color:rgb(216, 210, 210);
+            &:hover {
+                background: rgb(114, 114, 110);
+            }
+        }
     }
 }
 
 .layers-container{
     border-radius:0 0 7px 7px;
     background:rgb(98, 98, 102);
-    height:calc(100vh - 18px)
+    height:calc(100vh - 18px);
+    .layers-options-top{
+        height:25px;
+        background:rgb(139, 139, 146);
+    }
+    .layers-list{
+        margin:4px, 4px; 
+        padding:4px; 
+        background-color: rgb(98, 98, 102);
+        height: calc(100% - 57px); 
+        overflow-x: hidden; 
+        overflow-y: auto; 
+        text-align:justify; 
+    }
+    .layers-options-bottom{
+        display:flex;
+        height:25px;
+        background:rgb(139, 139, 146);
+        border-radius:inherit;
+        .layers-control{
+            margin-left:auto;
+            margin-right:8px;
+        }
+    }
+
+    .layers-icon{
+        color:rgb(216, 210, 210);
+        font-size:17px;
+        margin:1px 6px 0 4px;
+        padding:3px 4px 3px 4px;
+        &:hover {
+            background: rgb(114, 114, 110);
+        }
+    }
 }

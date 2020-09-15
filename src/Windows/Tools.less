@@ -19,9 +19,20 @@
     border-radius:0 0 7px 7px;
     background:rgb(98, 98, 102);
     height:calc(100vh - 17px);
-    .tools-icon{
-        color:rgb(216, 210, 210);
-        font-size:21px;
-        margin:8px 8px 8px 6px;
+    .icons-container{
+        padding-top:10px;
+        display:flex;
+        justify-content: center;
+        flex-wrap:wrap;
+        .tools-icon{
+            color:rgb(216, 210, 210);
+            font-size:19px;
+            margin:2px;
+            padding:4px 5px 4px 5px;
+            &:hover {
+                background: rgb(114, 114, 110);
+            }
+        }
     }
+    
 }
