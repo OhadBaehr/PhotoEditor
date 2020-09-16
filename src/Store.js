@@ -15,6 +15,7 @@ const StoreWrapper = (props) =>{
     const setLayers = (value)=>{
         console.log(Layers,value)
         setLayersAlpha(value)
+        console.log(Layers,value)
     }
 
     return(
