@@ -10,7 +10,7 @@ const Layers = () => {
     const store = useContext(StoreContext)
     useEffect(()=>{
         console.log("bla",store.Layers[store.ActiveLayer])
-    },[])
+    },[store.Layers])
     return(
         <>
         <div className={`layers-container`}>

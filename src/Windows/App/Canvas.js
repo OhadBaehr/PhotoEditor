@@ -20,13 +20,13 @@ var history = {
     let data
     (list || this.undo_list).push(data=canvas.toDataURL());
     
-    store.setLayers(store.Layers.map((item, j) => {
+    store.setContext({Layers:store.Layers.map((item, j) => {
       if (j === store.ActiveLayer) {
         return data;
       } else {
         return item;
       }
-    }))
+    })})
     return data
   },
   undo: function (store,canvas, ctx) {
