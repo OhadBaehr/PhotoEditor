@@ -8,18 +8,17 @@ const StoreWrapper = (props) =>{
     ctx.fillStyle = "white";
     ctx.rect(0, 0, 400, 400);
     ctx.fill();
-    var img = new Image();
-    img.src = canvas.toDataURL()
+    const [Layers, setLayersAlpha] = useState([canvas.toDataURL()])
     canvas.remove()
-    const [Layers, setLayers] = useState([img])
-    const [ActiveLayer,setActiveLayer]=useState(0)
+    const [ActiveLayer,setActiveLayerAlpha]= useState(0)
 
-    const store = {
-        Layers, setLayers,
-        ActiveLayer,setActiveLayer,
+    const setLayers = (value)=>{
+        console.log(Layers,value)
+        setLayersAlpha(value)
     }
+
     return(
-        <StoreContext.Provider value={store}>
+        <StoreContext.Provider value={{Layers,setLayers,ActiveLayer,setActiveLayerAlpha}}>
             {props.children}
         </StoreContext.Provider>
     )

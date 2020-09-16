@@ -17,19 +17,17 @@ var history = {
     if (!keep_redo) {
       this.redo_list = [];
     }
-    let img
-    (list || this.undo_list).push(img=canvas.toDataURL());
-    let im=new Image()
-    im.src=img
+    let data
+    (list || this.undo_list).push(data=canvas.toDataURL());
     
     store.setLayers(store.Layers.map((item, j) => {
       if (j === store.ActiveLayer) {
-        return im;
+        return data;
       } else {
         return item;
       }
     }))
-    return img
+    return data
   },
   undo: function (store,canvas, ctx) {
     this.restoreState(store,canvas, ctx, this.undo_list, this.redo_list);
@@ -133,7 +131,6 @@ const Canvas = () => {
 
   const handleCommands = (e) => {
     if (e.ctrlKey && e.key === 'z') {
-      console.log(canvas)
       history.undo(store,canvas, canvas.getContext('2d'));
     }
     if (e.ctrlKey && e.key === 'y') {
@@ -142,7 +139,6 @@ const Canvas = () => {
   }
 
   useEffect(() => {
-    console.log(store.ActiveLayer)
     itemsRef.current = itemsRef.current.slice(0, store.Layers.length);
     canvas=itemsRef.current[store.ActiveLayer]
     //Here we set up the properties of the canvas element. 
@@ -150,7 +146,11 @@ const Canvas = () => {
     canvas.height = state.canvasHeight;
     itemsRef.current.map((el,i)=>{
       let ctx= el.getContext('2d')
-      ctx.drawImage(store.Layers[i], 0, 0, el.width, el.height);
+      let img = new Image()
+      img.src= store.Layers[i]
+      img.onload = function () {
+        ctx.drawImage(img, 0, 0, el.width, el.height);
+      }
       //history.saveState(ctx.canvas);
     })
     tool = pencil(store,canvas, state.strokeColor)
@@ -167,7 +167,7 @@ const Canvas = () => {
     }
   }, [store.ActiveLayer])
   
-  const bla = React.useMemo(()=>{
+  const canvasMap = React.useMemo(()=>{
     return store.Layers.map((_,index)=>{
       let el=<canvas key={`canvas-${index.toString()}`} ref={el => itemsRef.current[index] = el} />
       return el
@@ -175,12 +175,12 @@ const Canvas = () => {
   })
   return (
     <div className={`inner-app-container`}>
-    <ToolProperties/>
-    <div className={`canvas-container`} style={{ minHeight:state.canvasHeight+100}}ref={canvasContainer}>
-      <div className={`transparent-background`} style={{ width: state.canvasWidth, height: state.canvasHeight }}>
-        {bla}
+      <ToolProperties/>
+      <div className={`canvas-container`} style={{ minHeight:state.canvasHeight+100}}ref={canvasContainer}>
+        <div className={`transparent-background`} style={{ width: state.canvasWidth, height: state.canvasHeight }}>
+          {canvasMap}
+        </div>
       </div>
-    </div>
     </div>
   );
 }

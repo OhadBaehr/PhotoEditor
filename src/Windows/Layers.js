@@ -9,7 +9,8 @@ import { StoreContext } from '../Store'
 const Layers = () => {
     const store = useContext(StoreContext)
     useEffect(()=>{
-    },[store.Layers[store.ActiveLayer].src])
+        console.log("bla",store.Layers[store.ActiveLayer])
+    },[])
     return(
         <>
         <div className={`layers-container`}>
@@ -24,8 +25,7 @@ const Layers = () => {
                 <ul>
                     <li>
                         <MdVisibility/>
-                        
-                        <img className={`canvas-preview`} src={store.Layers[0].src}/>
+                        <img className={`canvas-preview`} src={store.Layers[0]}/>
                     </li>
                 </ul>
             </div>
