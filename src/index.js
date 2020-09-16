@@ -3,9 +3,12 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import './index.less'
 import ViewManager from './ViewManager';
+import StoreWrapper from './Store'
 ReactDOM.render(
   <React.StrictMode>
-    <ViewManager />
+      <StoreWrapper>
+        <ViewManager />
+      </StoreWrapper>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,63 +1,120 @@
-.layers-nav{
-    border-radius:7px 7px 0 0;
-    border-top:2px solid  rgb(71, 71, 69);
-    background         : rgb(71, 71, 69);
-    width              : 100%;
-    height             : 14px;
-    -webkit-app-region : drag;
-    .nav-container {
-        -webkit-user-select: none;
+.layers-container {
+    //background: blue;
+    height    : 100vh;
 
-        display            : flex;
-        align-items        : center;
-        justify-content    : center;
-        .mini-icon{
-            -webkit-app-region: no-drag;
-            margin: 2px 8px 0 auto;
-            font-size:10px;
-            color:rgb(216, 210, 210);
-            &:hover {
-                background: rgb(114, 114, 110);
+    .layers-nav {
+        border-radius     : 7px 7px 0 0;
+        border-top        : 2px solid rgb(71, 71, 69);
+        background        : rgb(71, 71, 69);
+        width             : 100%;
+        height            : 14px;
+        -webkit-app-region: drag;
+
+        .nav-container {
+            -webkit-user-select: none;
+
+            display        : flex;
+            align-items    : center;
+            justify-content: center;
+
+            .mini-icon {
+                -webkit-app-region: no-drag;
+                margin            : 2px 8px 0 auto;
+                font-size         : 10px;
+                color             : rgb(216, 210, 210);
+
+                &:hover {
+                    background: rgb(114, 114, 110);
+                }
             }
         }
     }
-}
 
-.layers-container{
-    border-radius:0 0 7px 7px;
-    background:rgb(98, 98, 102);
-    height:calc(100vh - 18px);
-    .layers-options-top{
-        height:25px;
-        background:rgb(139, 139, 146);
+    .layers-options-top {
+        -webkit-app-region: drag;
+        height            : 25px;
+        background        : rgb(83, 85, 83);
     }
-    .layers-list{
-        margin:4px, 4px; 
-        padding:4px; 
-        background-color: rgb(98, 98, 102);
-        height: calc(100% - 57px); 
-        overflow-x: hidden; 
-        overflow-y: auto; 
-        text-align:justify; 
+
+    .layers-list {
+        margin          : 4px, 4px;
+        padding         : 4px;
+        background-color: rgb(56, 56, 58);
+        height          : calc(100% - 93px);
+        overflow-x      : hidden;
+        overflow-y      : scroll;
+        text-align      : justify;
+        border-left     : 4px solid rgb(83, 85, 83);
+        border-right    : 4px solid rgb(83, 85, 83);
+        .canvas-preview{
+            width:20px;
+            height:20px;
+        }
+        &::-webkit-scrollbar {
+            // display : none;
+            width: 13px;
+        }
+
+        &::-webkit-scrollbar-track {
+            display                   : block;
+            // display                : none;
+            background                : rgb(83, 85, 83);
+        }
+
+        &::-webkit-scrollbar-thumb:vertical {
+            //display         : none;
+            background-color: rgb(133, 122, 122);
+            outline         : 1px solid slategrey;
+            border          : 0.7px solid rgb(63, 61, 61);
+            border-left     : none;
+            border-radius   : 2px 8px 5px 3px
+        }
+
+        &::-webkit-scrollbar-track-piece:start {
+            margin-top: 0.3px;
+        }
+
+        &::-webkit-scrollbar-track-piece:vertical {
+            background   : rgb(63, 61, 61);
+            border-radius: 0 8px 0 0;
+        }
+
     }
-    .layers-options-bottom{
-        display:flex;
-        height:25px;
-        background:rgb(139, 139, 146);
-        border-radius:inherit;
-        .layers-control{
-            margin-left:auto;
-            margin-right:8px;
+
+    .layers-options-bottom {
+        -webkit-app-region: drag;
+        display           : flex;
+        height            : 25px;
+        background        : rgb(83, 85, 83);
+        border-radius     : inherit;
+
+        .layers-control {
+            margin-left : auto;
+            margin-right: 8px;
         }
     }
 
-    .layers-icon{
-        color:rgb(216, 210, 210);
-        font-size:17px;
-        margin:1px 6px 0 4px;
-        padding:3px 4px 3px 4px;
+    .layers-icon {
+        -webkit-app-region: no-drag;
+        color             : rgb(216, 210, 210);
+        font-size         : 14px;
+        margin            : 1px 3px 0 3px;
+        padding           : 4px;
+
         &:hover {
             background: rgb(114, 114, 110);
+        }
+    }
+
+    .dummy-scale {
+        border       : 2px solid rgb(71, 71, 69);
+        //border-top:none;
+        border-radius: 0 0 7px 7px;
+
+        .layers-footer {
+            background: rgb(71, 71, 69);
+            width     : 100%;
+            height    : 6px;
         }
     }
 }

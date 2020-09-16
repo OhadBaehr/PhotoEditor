@@ -8,8 +8,9 @@ import Layers from './Windows/Layers';
 import Tools from './Windows/Tools';
 
 class ViewManager extends Component {
-
+  
   static Views() {
+
     return {
       App: <App/>,
       Layers: <Layers/>,

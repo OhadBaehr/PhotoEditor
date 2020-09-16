@@ -16,8 +16,9 @@
 }
 
 .tools-container{
+    -webkit-app-region : drag;
     border-radius:0 0 7px 7px;
-    background:rgb(98, 98, 102);
+    background:rgb(83, 85, 83);
     height:calc(100vh - 17px);
     .icons-container{
         padding-top:10px;
@@ -25,14 +26,14 @@
         justify-content: center;
         flex-wrap:wrap;
         .tools-icon{
+            -webkit-app-region : no-drag;
             color:rgb(216, 210, 210);
-            font-size:19px;
-            margin:2px;
-            padding:4px 5px 4px 5px;
+            font-size:17px;
+            margin:1px;
+            padding:5px;
             &:hover {
                 background: rgb(114, 114, 110);
             }
         }
     }
-    
 }

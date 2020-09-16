@@ -1,4 +1,7 @@
 @import '../constants.less';
+.dark-theme {
+  @navHeight:2px;
+}
 .app-container{
     //border-radius: 6px;
     box-shadow: -1px 2px 0px 18px rgba(0,0,0,0.8);
@@ -9,6 +12,7 @@
     border-bottom:7px solid  rgb(83, 85, 83);
     .inner-app-container{
         height         : calc(100vh - @navHeight - 9px);
+        -webkit-app-region : drag;
         overflow: -moz-scrollbars-vertical; 
         overflow-y: scroll;
         overflow-x: scroll;
