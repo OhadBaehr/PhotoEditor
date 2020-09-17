@@ -5,19 +5,14 @@ import {AiFillFolderAdd,AiFillFolderOpen,AiFillFolder} from 'react-icons/ai'
 import {BiNote} from 'react-icons/bi'
 import {ImBin2} from 'react-icons/im'
 import {MdVisibility,MdVisibilityOff} from 'react-icons/md'
-import {useAbuse} from 'use-abuse'
-const electron = window.require("electron")
+import { useSelector } from 'react-redux'
+
 const Layers = () => {
-    const [state,setState]= useAbuse({Layers:0})
-    useEffect(()=>{
-        electron.ipcRenderer.on("BLA", (_,response)=>{
-            setState({Layers:response.message})
-            console.log(response)
-        })
-    },[state.Layers])
+    const store = useSelector(store => store.canvasStore)
+
     return(
         <>
-        <div className={`layers-container`}>
+        <div  className={`layers-container`}>
             <nav className="layers-nav">
                 <div className={`nav-container`}>
                     <VscChromeClose className={`mini-icon`}/>
@@ -29,9 +24,7 @@ const Layers = () => {
                 <ul>
                     <li>
                         <MdVisibility/>
-                        <div className={`transparent-background`} style={{ width: 20, height: 20 }}>
-                        <img className={`canvas-preview`} src={state.Layers[0]}/>
-                        </div>
+                        <img className={`canvas-preview`} src={store.layers[0]}/>
                     </li>
                 </ul>
             </div>

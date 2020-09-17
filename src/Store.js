@@ -1,41 +1,17 @@
-import React,{useState,useCallback} from 'react';
-import {useAbuse} from 'use-abuse'
-const StoreContext = React.createContext();//save all the current layers
+import React from 'react'
+import {configureStore} from "./store/configureStore";
+import { remote } from 'electron';
 
-const StoreWrapper = (props) =>{
-    var canvas=document.createElement("canvas");
-    const ctx = canvas.getContext('2d');
-    ctx.fillStyle = "white";
-    ctx.rect(0, 0, 400, 400);
-    ctx.fill();
-    const [state, setState] = useState({
-        Layers:[canvas.toDataURL()],
-        ActiveLayer:0
-    })
-    canvas.remove()
-    // const [ActiveLayer,setActiveLayerAlpha]= useState(0)
+import { Provider } from 'react-redux';
+const initialState = remote.getGlobal('state')
+const store = configureStore(initialState, 'renderer');
 
-    // const setLayers = (value)=>{
-    //     console.log(Layers,value)
-    //     setLayersAlpha(value)
-    //     console.log(Layers,value)
-    // }
-    const setContext = useCallback(
-        updates => {
-          setState({ ...state, ...updates })
-        },
-        [state, setState],
-        console.log(state)
-      )
+const StoreWrapper=(props)=>{
     return(
-        <StoreContext.Provider value={{
-            ...state,
-            setContext,
-          }}>
+        <Provider store={store}>
             {props.children}
-        </StoreContext.Provider>
+        </Provider>
     )
 }
-
-export {StoreContext}
-export default StoreWrapper;
+export {StoreWrapper}
+export default store;

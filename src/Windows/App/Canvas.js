@@ -3,10 +3,8 @@ import { useAbuse } from 'use-abuse'
 import ToolProperties from './ToolProperties'
 import './Canvas.less'
 import ReactDOM from 'react-dom';
-
-const electron = window.require("electron")
-
-
+import { useSelector } from 'react-redux'
+import store from '../../Store'
 var history = {
   redo_list: [],
   undo_list: [],
@@ -21,7 +19,6 @@ var history = {
     }
     let data
     (list || this.undo_list).push(data=canvas.toDataURL());
-    
     return data
   },
   undo: function (canvas, ctx) {
@@ -64,7 +61,13 @@ const pencil = (canvas, strokeColor) => {
       if (e.width === 1) {
         isDrawing = false;
         points.length = 0;
-        electron.ipcRenderer.send("updateLayers", [canvas.toDataURL()]);
+        store.dispatch({type:"SET_LAYERS",payload:store.getState().canvasStore.layers.map((item, j) => {
+          if (j === store.getState().canvasStore.ActiveLayer) {
+            return canvas.toDataURL();
+          } else {
+            return item;
+          }
+        })})
       }
     },
     onPointerMove: function (e) {
@@ -118,19 +121,15 @@ const pencil = (canvas, strokeColor) => {
 
 
 const Canvas = () => {
+  let layers=store.getState().canvasStore.layers
+
+  let activeLayer=store.getState().canvasStore.ActiveLayer
   const [state, setState] = useAbuse({ strokeColor: "rgba(0,0,0,0.5)", canvasHeight: 400, canvasWidth: 400 })
-  var canvas=document.createElement("canvas");
-  const ctx = canvas.getContext('2d');
-  ctx.fillStyle = "white";
-  ctx.rect(0, 0, 400, 400);
-  ctx.fill();
-  let Layers=[canvas.toDataURL()]
-  canvas.remove()
-  canvas = null
+  let canvas = null
   const itemsRef = useRef([]);
   let canvasContainer = useRef(null)
   let tool = null
-  let ActiveLayer=0
+
   const handleCommands = (e) => {
     if (e.ctrlKey && e.key === 'z') {
       history.undo(canvas, canvas.getContext('2d'));
@@ -141,15 +140,15 @@ const Canvas = () => {
   }
 
   useEffect(() => {
-    itemsRef.current = itemsRef.current.slice(0, Layers.length);
-    canvas=itemsRef.current[ActiveLayer]
+    itemsRef.current = itemsRef.current.slice(0, layers.length);
+    canvas=itemsRef.current[activeLayer]
     //Here we set up the properties of the canvas element. 
     canvas.width = state.canvasWidth;
     canvas.height = state.canvasHeight;
     itemsRef.current.map((el,i)=>{
       let ctx= el.getContext('2d')
       let img = new Image()
-      img.src= Layers[i]
+      img.src= layers[i]
       img.onload = function () {
         ctx.drawImage(img, 0, 0, el.width, el.height);
       }
@@ -167,15 +166,14 @@ const Canvas = () => {
       canvasContainer.current.removeEventListener("pointermove", tool.onPointerMove)
       canvasContainer.current.removeEventListener("pointerdown", tool.onPointerDown)
     }
-  }, [ActiveLayer])
+  }, [activeLayer])
   
   const canvasMap = React.useMemo(()=>{
-    return Layers.map((_,index)=>{
+    return layers.map((_,index)=>{
       let el=<canvas key={`canvas-${index.toString()}`} ref={el => itemsRef.current[index] = el} />
       return el
-    },[ActiveLayer])
+    },[activeLayer])
   })
-
   return (
     <div className={`inner-app-container`}>
       <ToolProperties/>
