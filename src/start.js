@@ -1,7 +1,14 @@
 const { app, BrowserWindow, ipcMain} = require('electron')
+const {configureStore} = require('../src/store/configureStore')
+//const path = require('path')
+//const url = require('url')
 
-const path = require('path')
-const url = require('url')
+global.state = {}
+
+const setupStore = ()=>{
+  const store = configureStore(global.state, 'main');
+  global.state = store.getState();
+}
 
 ipcMain.on('runCommand', async (event, arg) => {
   event.returnValue = await runCommand(arg);
@@ -10,7 +17,7 @@ ipcMain.on('runCommand', async (event, arg) => {
 let mainWindow
 function createWindow() {
   mainWindow = new BrowserWindow({
-    transparent: false, 
+    transparent: false,
     frame: false,
     width: 800,
     minWidth:340,
@@ -23,8 +30,8 @@ function createWindow() {
     },
     backgroundColor:"rgb(31, 31, 30)"
   })
-  
-  
+
+
   mainWindow.loadURL(
     process.env.ELECTRON_START_URL + '?App'
   )
@@ -41,7 +48,7 @@ function createWindow() {
   mainWindow.on('minimize', () => {
     subWindowsHide()
   })
-  
+
   mainWindow.on('restore', () => {
     subWindowsOverlay()
   })
@@ -64,6 +71,8 @@ function createWindow() {
     subWindowsOverlay()
   })
 }
+
+
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
@@ -88,7 +97,7 @@ function subWindowsOverlay(){
 let layersWindow
 function createLayers() {
   layersWindow = new BrowserWindow({
-    transparent: true, 
+    transparent: true,
     frame: false,
     width: 160,
     minWidth:120,
@@ -125,7 +134,7 @@ function createTools() {
     minHeight:60,
     type: 'toolbar',
     setSkipTaskbar:true,
-    transparent: true, 
+    transparent: true,
     frame: false,
     resizable:false,
     webPreferences: {
@@ -134,7 +143,7 @@ function createTools() {
       nodeIntegration: true
     },
   })
-  
+
   toolsWindow.loadURL(
     process.env.ELECTRON_START_URL + '?Tools'
   )
@@ -153,6 +162,7 @@ app.on('ready', ()=>{
   createWindow()
   createLayers()
   createTools()
+  setupStore()
 })
 
 app.on('window-all-closed', () => {

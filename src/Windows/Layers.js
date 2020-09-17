@@ -6,14 +6,14 @@ import {BiNote} from 'react-icons/bi'
 import {ImBin2} from 'react-icons/im'
 import {MdVisibility,MdVisibilityOff} from 'react-icons/md'
 import { StoreContext } from '../Store'
+import { useSelector } from 'react-redux'
+
 const Layers = () => {
-    const store = useContext(StoreContext)
-    useEffect(()=>{
-        console.log("bla",store.Layers[store.ActiveLayer])
-    },[store.Layers])
+    const layer = useSelector(state => state.layers.layers[0])
+
     return(
         <>
-        <div className={`layers-container`}>
+        <div  className={`layers-container`}>
             <nav className="layers-nav">
                 <div className={`nav-container`}>
                     <VscChromeClose className={`mini-icon`}/>
@@ -25,7 +25,7 @@ const Layers = () => {
                 <ul>
                     <li>
                         <MdVisibility/>
-                        <img className={`canvas-preview`} src={store.Layers[0]}/>
+                        <img className={`canvas-preview`} src={layer}/>
                     </li>
                 </ul>
             </div>

@@ -1,8 +1,12 @@
 import React,{useState,useCallback} from 'react';
+import {useDispatch} from "react-redux";
+import * as layerActions from './store/actions/layersActions'
 import {useAbuse} from 'use-abuse'
 const StoreContext = React.createContext();//save all the current layers
 
 const StoreWrapper = (props) =>{
+    const dispatch = useDispatch();
+
     var canvas=document.createElement("canvas");
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = "white";
@@ -22,10 +26,13 @@ const StoreWrapper = (props) =>{
     // }
     const setContext = useCallback(
         updates => {
-          setState({ ...state, ...updates })
+            dispatch(layerActions.setLayers(updates))
+
+            setState({ ...state, ...updates })
         },
         [state, setState],
-        console.log(state)
+
+        console.log(state.Layers)
       )
     const getContextValue = useCallback(
         () => ({

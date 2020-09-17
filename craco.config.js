@@ -1,4 +1,10 @@
+
 module.exports = {
+  webpack: {
+    configure: {
+      target: 'electron-renderer'
+    }
+  },
   eslint: {
     enable: false,
   },
@@ -8,7 +14,7 @@ module.exports = {
       options: {
         lessLoaderOptions: {
           lessOptions: {
-            
+
             modifyVars: { '@primary-color': '#1DA57A' },
             javascriptEnabled: true,
           },
