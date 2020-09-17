@@ -1,1 +1,6 @@
-module.exports = {SET_LAYERS : 'SET_LAYERS'}
+module.exports = {
+    SET_LAYERS: 'SET_LAYERS',
+    SOME_NEW_ACTION: 'SOME_NEW_ACTION',
+    SOME_OTHER_NEW_ACTION:'SOME_OTHER_NEW_ACTION'
+}
+

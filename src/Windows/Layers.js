@@ -9,7 +9,7 @@ import { StoreContext } from '../Store'
 import { useSelector } from 'react-redux'
 
 const Layers = () => {
-    const layer = useSelector(state => state.layers.layers[0])
+    const store = useSelector(store => store.canvasStore)
 
     return(
         <>
@@ -25,7 +25,7 @@ const Layers = () => {
                 <ul>
                     <li>
                         <MdVisibility/>
-                        <img className={`canvas-preview`} src={layer}/>
+                        <img className={`canvas-preview`} src={store.layers[0]}/>
                     </li>
                 </ul>
             </div>

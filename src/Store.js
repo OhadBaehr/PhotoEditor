@@ -1,6 +1,6 @@
 import React,{useState,useCallback} from 'react';
 import {useDispatch} from "react-redux";
-import * as layerActions from './store/actions/layersActions'
+import * as canvasActions from './store/actions/canvasActions'
 import {useAbuse} from 'use-abuse'
 const StoreContext = React.createContext();//save all the current layers
 
@@ -26,7 +26,7 @@ const StoreWrapper = (props) =>{
     // }
     const setContext = useCallback(
         updates => {
-            dispatch(layerActions.setLayers(updates))
+            dispatch(canvasActions.setLayers(updates))
 
             setState({ ...state, ...updates })
         },
