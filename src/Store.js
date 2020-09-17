@@ -27,15 +27,11 @@ const StoreWrapper = (props) =>{
         [state, setState],
         console.log(state)
       )
-    const getContextValue = useCallback(
-        () => ({
-          ...state,
-          setContext,
-        }),
-        [state, setContext],
-    )
     return(
-        <StoreContext.Provider value={getContextValue()}>
+        <StoreContext.Provider value={{
+            ...state,
+            setContext,
+          }}>
             {props.children}
         </StoreContext.Provider>
     )

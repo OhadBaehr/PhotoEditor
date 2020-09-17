@@ -7,6 +7,14 @@ ipcMain.on('runCommand', async (event, arg) => {
   event.returnValue = await runCommand(arg);
 });
 
+
+ipcMain.on("updateLayers", (event, layers) => {
+  event.reply("BLA", layers);
+  layersWindow.webContents.send('BLA', {
+    message: layers
+  });
+});
+
 let mainWindow
 function createWindow() {
   mainWindow = new BrowserWindow({

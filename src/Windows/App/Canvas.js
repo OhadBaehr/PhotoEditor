@@ -2,8 +2,10 @@ import React, { useEffect, useRef ,useContext} from 'react'
 import { useAbuse } from 'use-abuse'
 import ToolProperties from './ToolProperties'
 import './Canvas.less'
-import {StoreContext} from '../../Store'
 import ReactDOM from 'react-dom';
+
+const electron = window.require("electron")
+
 
 var history = {
   redo_list: [],
@@ -12,7 +14,7 @@ var history = {
     this.redo_list=redo
     this.undo_list=undo
   },
-  saveState: function (store ,canvas, list, keep_redo) {
+  saveState: function (canvas, list, keep_redo) {
     keep_redo = keep_redo || false;
     if (!keep_redo) {
       this.redo_list = [];
@@ -20,24 +22,17 @@ var history = {
     let data
     (list || this.undo_list).push(data=canvas.toDataURL());
     
-    store.setContext({Layers:store.Layers.map((item, j) => {
-      if (j === store.ActiveLayer) {
-        return data;
-      } else {
-        return item;
-      }
-    })})
     return data
   },
-  undo: function (store,canvas, ctx) {
-    this.restoreState(store,canvas, ctx, this.undo_list, this.redo_list);
+  undo: function (canvas, ctx) {
+    this.restoreState(canvas, ctx, this.undo_list, this.redo_list);
   },
-  redo: function (store,canvas, ctx) {
-    this.restoreState(store,canvas, ctx, this.redo_list, this.undo_list);
+  redo: function (canvas, ctx) {
+    this.restoreState(canvas, ctx, this.redo_list, this.undo_list);
   },
-  restoreState: function (store,canvas, ctx, pop, push) {
+  restoreState: function (canvas, ctx, pop, push) {
     if (pop.length) {
-      this.saveState(store,canvas, push, true);
+      this.saveState(canvas, push, true);
       var restore_state = pop.pop();
       var img = new Image();
       img.src = restore_state
@@ -51,7 +46,7 @@ var history = {
   }
 }
 
-const pencil = (store,canvas, strokeColor) => {
+const pencil = (canvas, strokeColor) => {
   let ctx = canvas.getContext("2d")
   ctx.lineWidth = 10;
   ctx.lineJoin = ctx.lineCap = 'round';
@@ -62,13 +57,14 @@ const pencil = (store,canvas, strokeColor) => {
     onPointerDown: function (e) {
       if (e.width === 1) {
         isDrawing = true;
-        img.src = history.saveState(store,ctx.canvas);
+        img.src = history.saveState(ctx.canvas);
       }
     },
     onPointerUp: function (e) {
       if (e.width === 1) {
         isDrawing = false;
         points.length = 0;
+        electron.ipcRenderer.send("updateLayers", [canvas.toDataURL()]);
       }
     },
     onPointerMove: function (e) {
@@ -102,7 +98,7 @@ const pencil = (store,canvas, strokeColor) => {
           }
           ctx.stroke();
           ctx.beginPath()
-          img.src = history.saveState(store,ctx.canvas);
+          img.src = history.saveState(ctx.canvas);
           points.length = 0;
           prevCtxOperation === 'source-over' ? ctx.globalCompositeOperation = 'destination-out' : ctx.globalCompositeOperation = 'source-over'
         } else {
@@ -122,38 +118,44 @@ const pencil = (store,canvas, strokeColor) => {
 
 
 const Canvas = () => {
-  const store=useContext(StoreContext)
   const [state, setState] = useAbuse({ strokeColor: "rgba(0,0,0,0.5)", canvasHeight: 400, canvasWidth: 400 })
-  let canvas = null
+  var canvas=document.createElement("canvas");
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = "white";
+  ctx.rect(0, 0, 400, 400);
+  ctx.fill();
+  let Layers=[canvas.toDataURL()]
+  canvas.remove()
+  canvas = null
   const itemsRef = useRef([]);
   let canvasContainer = useRef(null)
   let tool = null
-
+  let ActiveLayer=0
   const handleCommands = (e) => {
     if (e.ctrlKey && e.key === 'z') {
-      history.undo(store,canvas, canvas.getContext('2d'));
+      history.undo(canvas, canvas.getContext('2d'));
     }
     if (e.ctrlKey && e.key === 'y') {
-      history.redo(store,canvas, canvas.getContext('2d'))
+      history.redo(canvas, canvas.getContext('2d'))
     }
   }
 
   useEffect(() => {
-    itemsRef.current = itemsRef.current.slice(0, store.Layers.length);
-    canvas=itemsRef.current[store.ActiveLayer]
+    itemsRef.current = itemsRef.current.slice(0, Layers.length);
+    canvas=itemsRef.current[ActiveLayer]
     //Here we set up the properties of the canvas element. 
     canvas.width = state.canvasWidth;
     canvas.height = state.canvasHeight;
     itemsRef.current.map((el,i)=>{
       let ctx= el.getContext('2d')
       let img = new Image()
-      img.src= store.Layers[i]
+      img.src= Layers[i]
       img.onload = function () {
         ctx.drawImage(img, 0, 0, el.width, el.height);
       }
       //history.saveState(ctx.canvas);
     })
-    tool = pencil(store,canvas, state.strokeColor)
+    tool = pencil(canvas, state.strokeColor)
 
     window.addEventListener('keydown', handleCommands);
     window.addEventListener('pointerup', tool.onPointerUp);
@@ -165,14 +167,15 @@ const Canvas = () => {
       canvasContainer.current.removeEventListener("pointermove", tool.onPointerMove)
       canvasContainer.current.removeEventListener("pointerdown", tool.onPointerDown)
     }
-  }, [store.ActiveLayer])
+  }, [ActiveLayer])
   
   const canvasMap = React.useMemo(()=>{
-    return store.Layers.map((_,index)=>{
+    return Layers.map((_,index)=>{
       let el=<canvas key={`canvas-${index.toString()}`} ref={el => itemsRef.current[index] = el} />
       return el
-    },[store.ActiveLayer])
+    },[ActiveLayer])
   })
+
   return (
     <div className={`inner-app-container`}>
       <ToolProperties/>

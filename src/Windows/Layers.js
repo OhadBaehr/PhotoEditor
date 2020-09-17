@@ -5,12 +5,16 @@ import {AiFillFolderAdd,AiFillFolderOpen,AiFillFolder} from 'react-icons/ai'
 import {BiNote} from 'react-icons/bi'
 import {ImBin2} from 'react-icons/im'
 import {MdVisibility,MdVisibilityOff} from 'react-icons/md'
-import { StoreContext } from '../Store'
+import {useAbuse} from 'use-abuse'
+const electron = window.require("electron")
 const Layers = () => {
-    const store = useContext(StoreContext)
+    const [state,setState]= useAbuse({Layers:0})
     useEffect(()=>{
-        console.log("bla",store.Layers[store.ActiveLayer])
-    },[store.Layers])
+        electron.ipcRenderer.on("BLA", (_,response)=>{
+            setState({Layers:response.message})
+            console.log(response)
+        })
+    },[state.Layers])
     return(
         <>
         <div className={`layers-container`}>
@@ -25,7 +29,9 @@ const Layers = () => {
                 <ul>
                     <li>
                         <MdVisibility/>
-                        <img className={`canvas-preview`} src={store.Layers[0]}/>
+                        <div className={`transparent-background`} style={{ width: 20, height: 20 }}>
+                        <img className={`canvas-preview`} src={state.Layers[0]}/>
+                        </div>
                     </li>
                 </ul>
             </div>
