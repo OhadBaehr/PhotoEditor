@@ -156,7 +156,7 @@ const Canvas = () => {
       canvasContainer.current.removeEventListener("pointermove", tool.onPointerMove)
       canvasContainer.current.removeEventListener("pointerdown", tool.onPointerDown)
     }
-  }, [store.activeLayer])
+  }, [store.activeLayer,store.dpi])
 
   const canvasMap = React.useMemo(() => {
     return store.layers.map((_, index) => {
@@ -166,14 +166,11 @@ const Canvas = () => {
     }, [store.activeLayer])
   })
   return (
-    <div className={`inner-app-container`}>
-      <ToolProperties />
       <div className={`canvas-container`} style={{ minHeight: state.canvasHeight + 100 }} ref={canvasContainer}>
         <div className={`transparent-background`} style={{ width: state.canvasWidth, height: state.canvasHeight }}>
           {canvasMap}
         </div>
       </div>
-    </div>
   );
 }
 

@@ -122,7 +122,7 @@ function createLayers() {
 
   mainWindowSize=mainWindow.getNormalBounds()
   layersWindowSize=layersWindow.getNormalBounds()
-  layersWindow.setPosition(mainWindowSize.width+mainWindowSize.x-layersWindowSize.width-5,mainWindowSize.y+mainWindowSize.height-layersWindowSize.height-5)
+  layersWindow.setPosition(mainWindowSize.width+mainWindowSize.x-layersWindowSize.width-30,mainWindowSize.y+mainWindowSize.height-layersWindowSize.height-40)
 }
 
 let toolsWindow
@@ -130,7 +130,7 @@ function createTools() {
   toolsWindow = new BrowserWindow({
     width: 68,
     minWidth:40,
-    height: 350,
+    height: 264,
     minHeight:60,
     type: 'toolbar',
     setSkipTaskbar:true,
@@ -155,7 +155,7 @@ function createTools() {
 
   mainWindowSize=mainWindow.getNormalBounds()
   toolsWindowSize=toolsWindow.getNormalBounds()
-  toolsWindow.setPosition(mainWindowSize.x+5,mainWindowSize.y+mainWindowSize.height-toolsWindowSize.height-5)
+  toolsWindow.setPosition(mainWindowSize.x+30,mainWindowSize.y+mainWindowSize.height-toolsWindowSize.height-40)
 }
 
 app.on('ready', ()=>{

@@ -33,7 +33,9 @@
                 -webkit-app-region: no-drag;
                 color             : rgb(216, 210, 210);
                 font-size         : 14px;
-                margin            : 0 3px 1px 0;
+                min-width:14px;
+                min-height:17px;
+                margin            : 0 3px 0 0;
                 padding           : 2px;
         
                 &:hover {
@@ -50,6 +52,26 @@
                 .canvas-preview{
                     width:20px;
                     height:20px;
+                }
+            }
+            .layer-name{
+                background:none;
+                border:none;
+                color:rgb(216, 210, 210);
+                width:100%;
+                margin-left:6px;
+            }
+            .lock-icon{
+                -webkit-app-region: no-drag;
+                color             : rgb(216, 210, 210);
+                font-size         : 20px;
+                min-width:16px;
+                min-height:17px;
+                margin            : 0 3px 0 0;
+                padding           : 2px;
+        
+                &:hover {
+                    background: rgb(114, 114, 110);
                 }
             }
         }

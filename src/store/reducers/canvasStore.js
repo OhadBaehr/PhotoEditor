@@ -7,16 +7,19 @@ function blankImage() {
 const initialState = {
     layers: [{
         src: blankImage(),
-        visible: true
+        visible: true,
+        name: "layer 0"
     }],
     activeLayer: 0,
-    dpi:window.devicePixelRatio
+    dpi:1
 }
 
 const canvasStore = (state = initialState, action) => {
     switch (action.type) {
         case 'SET_LAYERS':
             return { ...state, layers: action.payload }
+        case 'SET_DPI':
+            return {...state,dpi:action.payload}
         default:
             return state
     }

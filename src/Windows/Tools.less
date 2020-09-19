@@ -21,7 +21,7 @@
     background:rgb(83, 85, 83);
     height:calc(100vh - 17px);
     .icons-container{
-        padding-top:10px;
+        padding-top:6px;
         display:flex;
         justify-content: center;
         flex-wrap:wrap;
@@ -34,6 +34,36 @@
             &:hover {
                 background: rgb(114, 114, 110);
             }
+        }
+    }
+    .stroke-colors-container{
+        margin-top:23px;
+        display: flex;
+        justify-content: center;
+        .arrow90deg{
+            position: absolute;
+            color:white;
+            margin-top:-14px;
+            margin-left:14px;
+            font-size:12px;
+        }
+        .primary-color{
+            position: absolute;
+            margin-top:-15px;
+            margin-left:-7px;
+            width:24px;
+            height:24px;
+            background:black;
+            border:1px solid rgb(209, 206, 206);
+            outline:1px solid rgba(0, 0, 0, 0.205);
+        }
+        .secondary-color{
+            width:24px;
+            height:24px;
+            background:white;
+            border:1px solid rgb(209, 206, 206);
+            outline:1px solid rgba(0, 0, 0, 0.205);
+            margin-left:13px;
         }
     }
 }
