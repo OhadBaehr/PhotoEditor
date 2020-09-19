@@ -11,7 +11,8 @@ const initialState = {
         name: "layer 0"
     }],
     activeLayer: 0,
-    dpi:1
+    dpi:1,
+    layersCount:1
 }
 
 const canvasStore = (state = initialState, action) => {
@@ -20,6 +21,8 @@ const canvasStore = (state = initialState, action) => {
             return { ...state, layers: action.payload }
         case 'SET_DPI':
             return {...state,dpi:action.payload}
+        case 'SET_LAYERS_COUNT':
+            return {...state,layersCount:action.payload}
         default:
             return state
     }

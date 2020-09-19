@@ -39,7 +39,7 @@ var history = {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       }
-      saveActiveLayerImage(canvas, restore_state)
+      saveActiveLayerImage(restore_state)
     }
   }
 }
@@ -63,7 +63,7 @@ const pencil = (canvas, strokeColor) => {
       if (e.width === 1) {
         isDrawing = false;
         points.length = 0;
-        saveActiveLayerImage(canvas, canvas.toDataURL())
+        saveActiveLayerImage(canvas.toDataURL())
       }
     },
     onPointerMove: function (e) {
@@ -161,7 +161,7 @@ const Canvas = () => {
   const canvasMap = React.useMemo(() => {
     return store.layers.map((_, index) => {
       let el = <canvas className={`canvas`} key={`canvas-${index.toString()}`} ref={el => itemsRef.current[index] = el} 
-        width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi} style={{ width: state.canvasWidth, height: state.canvasHeight }}/>
+        width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi} style={{ marginTop:-state.canvasHeight*(index) ,width: state.canvasWidth, height: state.canvasHeight }}/>
       return el
     }, [store.activeLayer])
   })

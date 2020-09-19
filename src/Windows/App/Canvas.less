@@ -7,6 +7,8 @@
     height         : calc(100% - 24px);
 
     .canvas {
+        box-sizing: border-box; /* required */
+        flex: none; /* required */
         image-rendering   : pixelated;
         -webkit-app-region: no-drag; //fix: scrollbar not working properly when scrollY>0
     }
@@ -17,4 +19,6 @@
     background-position: 0px 0, 5px 5px;
     background-size    : 10px 10px, 10px 10px;
     touch-action       : none;
+    display: flex; /* required */
+    flex-flow: column nowrap; /* required */
 }

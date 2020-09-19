@@ -8,7 +8,7 @@ const initialState = remote.getGlobal('state')
 const globalStore = configureStore(initialState, 'renderer');
 
 
-function saveActiveLayerImage(canvas,newImage){
+function saveActiveLayerImage(newImage){
     let store=globalStore.getState().canvasStore 
     globalStore.dispatch({type:"SET_LAYERS",payload:store.layers.map((layer, j) => {
     if (j === store.activeLayer) {
@@ -19,6 +19,15 @@ function saveActiveLayerImage(canvas,newImage){
     })})
 }
 
+
+function addLayer(layer){
+    let store=globalStore.getState().canvasStore
+    let layers=store.layers
+    layers.push(layer)
+    globalStore.dispatch({type:"SET_LAYERS",payload:layers})
+    globalStore.dispatch({type:"SET_LAYERS_COUNT",payload:store.layersCount+1})
+}
+
 const StoreProvider=(props)=>{
     return(
         <Provider store={globalStore}>
@@ -26,5 +35,5 @@ const StoreProvider=(props)=>{
         </Provider>
     )
 }
-export {StoreProvider,saveActiveLayerImage}
+export {StoreProvider,saveActiveLayerImage,addLayer}
 export default globalStore;
