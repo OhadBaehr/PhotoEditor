@@ -159,6 +159,7 @@ const Canvas = () => {
   }, [store.activeLayer,store.dpi])
 
   const canvasMap = React.useMemo(() => {
+    console.log("bla")
     return store.layers.map((_, index) => {
       let el = <canvas className={`canvas`} key={`canvas-${index.toString()}`} ref={el => itemsRef.current[index] = el} 
         width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi} style={{ marginTop:-state.canvasHeight*(index) ,width: state.canvasWidth, height: state.canvasHeight }}/>

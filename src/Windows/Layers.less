@@ -18,7 +18,7 @@
 
     .layers-list {
         margin          : 4px, 4px;
-        padding         : 4px;
+        padding         : 0 4px 0 4px;
         background-color: rgb(56, 56, 58);
         height          : calc(100% - 85px);
         overflow-x      : hidden;
@@ -27,12 +27,18 @@
         border-left     : 4px solid rgb(83, 85, 83);
         border-right    : 4px solid rgb(83, 85, 83);
         .layer-item{
+            margin: 4px 0 4px 0;
             display:flex;
             flex-direction: row;
+            align-items: center;
+            border-bottom:1px solid rgb(83, 77, 77);
+            &:last-child{
+                border-bottom:none;
+            }
             .eye-icon{
                 -webkit-app-region: no-drag;
                 color             : rgb(216, 210, 210);
-                font-size         : 14px;
+                font-size         : 13px;
                 min-width:14px;
                 min-height:17px;
                 margin            : 0 3px 0 0;
@@ -59,17 +65,25 @@
                 border:none;
                 color:rgb(216, 210, 210);
                 width:100%;
-                margin-left:6px;
+                font-size:12px;
+                outline:none;
+                margin-left:3px;
+                padding:0 6px 0 6px;
+                height:19px;
+                &:focus{
+                    border:1px solid rgb(88, 86, 80);
+                    background:rgb(46, 45, 45);
+                    // outline:1px solid rgb(109, 95, 50);
+                }
             }
             .lock-icon{
                 -webkit-app-region: no-drag;
                 color             : rgb(216, 210, 210);
-                font-size         : 20px;
+                font-size         : 17px;
                 min-width:16px;
                 min-height:17px;
-                margin            : 0 3px 0 0;
+                margin            : 0 0 0 2px;
                 padding           : 2px;
-        
                 &:hover {
                     background: rgb(114, 114, 110);
                 }
