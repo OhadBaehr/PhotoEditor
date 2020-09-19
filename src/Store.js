@@ -4,14 +4,26 @@ import { remote } from 'electron';
 
 import { Provider } from 'react-redux';
 const initialState = remote.getGlobal('state')
-const store = configureStore(initialState, 'renderer');
+const globalStore = configureStore(initialState, 'renderer');
 
-const StoreWrapper=(props)=>{
+
+function saveActiveLayerImage(canvas,newImage){
+    let store=globalStore.getState().canvasStore 
+    globalStore.dispatch({type:"SET_LAYERS",payload:store.layers.map((layer, j) => {
+    if (j === store.activeLayer) {
+        return {src:newImage,visible:layer.visible};
+    } else {
+        return layer;
+    }
+    })})
+}
+
+const StoreProvider=(props)=>{
     return(
-        <Provider store={store}>
+        <Provider store={globalStore}>
             {props.children}
         </Provider>
     )
 }
-export {StoreWrapper}
-export default store;
+export {StoreProvider,saveActiveLayerImage}
+export default globalStore;

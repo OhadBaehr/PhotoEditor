@@ -6,12 +6,13 @@ import {ImEyedropper} from 'react-icons/im';
 import {IoIosBrush,IoMdColorWand} from 'react-icons/io'
 import {FaStamp} from 'react-icons/fa'
 import {CgColorBucket,CgBandAid} from 'react-icons/cg'
+import {VscChromeClose} from 'react-icons/vsc'
 const Tools = () => {
     return(
         <>
         <div className="tools-nav drag-scale-fix">
             <div className={`nav-container`}>
-                
+                <VscChromeClose className={`mini-icon`}/>
             </div>
         </div>
         <div className={'tools-container'}>

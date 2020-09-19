@@ -1,16 +1,16 @@
-import React, { useEffect, useRef ,useContext} from 'react'
+import React, { useEffect, useRef, useContext } from 'react'
 import { useAbuse } from 'use-abuse'
 import ToolProperties from './ToolProperties'
 import './Canvas.less'
 import ReactDOM from 'react-dom';
 import { useSelector } from 'react-redux'
-import store from '../../Store'
+import globalStore, { saveActiveLayerImage } from '../../Store'
 var history = {
   redo_list: [],
   undo_list: [],
-  init: function(redo,undo){
-    this.redo_list=redo
-    this.undo_list=undo
+  init: function (redo, undo) {
+    this.redo_list = redo
+    this.undo_list = undo
   },
   saveState: function (canvas, list, keep_redo) {
     keep_redo = keep_redo || false;
@@ -18,7 +18,7 @@ var history = {
       this.redo_list = [];
     }
     let data
-    (list || this.undo_list).push(data=canvas.toDataURL());
+    (list || this.undo_list).push(data = canvas.toDataURL());
     return data
   },
   undo: function (canvas, ctx) {
@@ -39,15 +39,17 @@ var history = {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       }
+      saveActiveLayerImage(canvas, restore_state)
     }
   }
 }
 
 const pencil = (canvas, strokeColor) => {
   let ctx = canvas.getContext("2d")
-  ctx.lineWidth = 10;
+  let dpi=globalStore.getState().canvasStore.dpi
+  ctx.lineWidth = 20;
   ctx.lineJoin = ctx.lineCap = 'round';
-  ctx.strokeStyle = "rgba(0,0,0,0.5)"
+  ctx.strokeStyle = "rgba(0,0,0,0.75)"
   let isDrawing, points = [];
   let img = new Image();
   return {
@@ -61,21 +63,15 @@ const pencil = (canvas, strokeColor) => {
       if (e.width === 1) {
         isDrawing = false;
         points.length = 0;
-        store.dispatch({type:"SET_LAYERS",payload:store.getState().canvasStore.layers.map((item, j) => {
-          if (j === store.getState().canvasStore.ActiveLayer) {
-            return canvas.toDataURL();
-          } else {
-            return item;
-          }
-        })})
+        saveActiveLayerImage(canvas, canvas.toDataURL())
       }
     },
     onPointerMove: function (e) {
       if (e.width === 1) {
         if (!isDrawing) return;
         var rect = canvas.getBoundingClientRect();
-        let mouseX = e.clientX -rect.left
-        let mouseY = e.clientY -  rect.top
+        let mouseX = e.clientX - rect.left
+        let mouseY = e.clientY - rect.top
         let prevCtxOperation = ctx.globalCompositeOperation
         ctx.globalCompositeOperation = 'source-over';
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -91,27 +87,27 @@ const pencil = (canvas, strokeColor) => {
           default:
             break;
         }
+        ctx.scale(dpi,dpi)
+        ctx.beginPath();
         if (prevCtxOperation !== ctx.globalCompositeOperation) {
           //fixing issues when switching from one ctx composition to another
           ctx.globalCompositeOperation = prevCtxOperation
-          ctx.beginPath();
           ctx.moveTo(points[0].x, points[0].y);
           for (var i = 1; i < points.length; i++) {
             ctx.lineTo(points[i].x, points[i].y);
           }
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
           ctx.stroke();
-          ctx.beginPath()
           img.src = history.saveState(ctx.canvas);
           points.length = 0;
           prevCtxOperation === 'source-over' ? ctx.globalCompositeOperation = 'destination-out' : ctx.globalCompositeOperation = 'source-over'
         } else {
-          ctx.beginPath();
           ctx.moveTo(points[0].x, points[0].y);
           for (var i = 1; i < points.length; i++) {
             ctx.lineTo(points[i].x, points[i].y);
           }
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
           ctx.stroke();
-          ctx.beginPath()
         }
       }
     },
@@ -121,15 +117,12 @@ const pencil = (canvas, strokeColor) => {
 
 
 const Canvas = () => {
-  let layers=store.getState().canvasStore.layers
-
-  let activeLayer=store.getState().canvasStore.ActiveLayer
+  const store = useSelector(store => store.canvasStore)
   const [state, setState] = useAbuse({ strokeColor: "rgba(0,0,0,0.5)", canvasHeight: 400, canvasWidth: 400 })
   let canvas = null
   const itemsRef = useRef([]);
   let canvasContainer = useRef(null)
   let tool = null
-
   const handleCommands = (e) => {
     if (e.ctrlKey && e.key === 'z') {
       history.undo(canvas, canvas.getContext('2d'));
@@ -140,19 +133,16 @@ const Canvas = () => {
   }
 
   useEffect(() => {
-    itemsRef.current = itemsRef.current.slice(0, layers.length);
-    canvas=itemsRef.current[activeLayer]
+    itemsRef.current = itemsRef.current.slice(0, store.layers.length);
+    canvas = itemsRef.current[store.activeLayer]
     //Here we set up the properties of the canvas element. 
-    canvas.width = state.canvasWidth;
-    canvas.height = state.canvasHeight;
-    itemsRef.current.map((el,i)=>{
-      let ctx= el.getContext('2d')
+    itemsRef.current.map((el, i) => {
+      let ctx = el.getContext('2d')
       let img = new Image()
-      img.src= layers[i]
+      img.src = store.layers[i].src
       img.onload = function () {
         ctx.drawImage(img, 0, 0, el.width, el.height);
       }
-      //history.saveState(ctx.canvas);
     })
     tool = pencil(canvas, state.strokeColor)
 
@@ -166,18 +156,19 @@ const Canvas = () => {
       canvasContainer.current.removeEventListener("pointermove", tool.onPointerMove)
       canvasContainer.current.removeEventListener("pointerdown", tool.onPointerDown)
     }
-  }, [activeLayer])
-  
-  const canvasMap = React.useMemo(()=>{
-    return layers.map((_,index)=>{
-      let el=<canvas key={`canvas-${index.toString()}`} ref={el => itemsRef.current[index] = el} />
+  }, [store.activeLayer])
+
+  const canvasMap = React.useMemo(() => {
+    return store.layers.map((_, index) => {
+      let el = <canvas className={`canvas`} key={`canvas-${index.toString()}`} ref={el => itemsRef.current[index] = el} 
+        width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi} style={{ width: state.canvasWidth, height: state.canvasHeight }}/>
       return el
-    },[activeLayer])
+    }, [store.activeLayer])
   })
   return (
     <div className={`inner-app-container`}>
-      <ToolProperties/>
-      <div className={`canvas-container`} style={{ minHeight:state.canvasHeight+100}}ref={canvasContainer}>
+      <ToolProperties />
+      <div className={`canvas-container`} style={{ minHeight: state.canvasHeight + 100 }} ref={canvasContainer}>
         <div className={`transparent-background`} style={{ width: state.canvasWidth, height: state.canvasHeight }}>
           {canvasMap}
         </div>
