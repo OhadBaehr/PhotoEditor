@@ -21,8 +21,8 @@ const Layers = () => {
                 <input type="text" defaultValue={store.layers[index].name} className={`layer-name`}></input>
                 <MdLock className={`lock-icon`}/>
             </li>
-        }, [store.activeLayer])
-    })
+        })
+    }, [store.activeLayer,store.layersCount])
     return (
         <>
             <div className={`layers-container`}>

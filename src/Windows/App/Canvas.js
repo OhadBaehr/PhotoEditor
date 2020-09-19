@@ -164,8 +164,8 @@ const Canvas = () => {
       let el = <canvas className={`canvas`} key={`canvas-${index.toString()}`} ref={el => itemsRef.current[index] = el} 
         width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi} style={{ marginTop:-state.canvasHeight*(index) ,width: state.canvasWidth, height: state.canvasHeight }}/>
       return el
-    }, [store.activeLayer])
-  })
+    })
+  }, [store.activeLayer,store.layersCount,store.dpi])
   return (
       <div className={`canvas-container`} style={{ minHeight: state.canvasHeight + 100 }} ref={canvasContainer}>
         <div className={`transparent-background`} style={{ width: state.canvasWidth, height: state.canvasHeight }}>
