@@ -22,10 +22,10 @@ function saveActiveLayerImage(newImage){
 
 function addLayer(layer){
     let store=globalStore.getState().canvasStore
-    let layers=store.layers
-    layers.push(layer)
-    globalStore.dispatch({type:"SET_LAYERS",payload:layers})
-    globalStore.dispatch({type:"SET_LAYERS_COUNT",payload:store.layersCount+1})
+    store.layers.push(layer)
+    store.activeLayer=store.layersCount
+    store.layersCount+=1
+    globalStore.dispatch({type:"SET_STORE",payload:store})
 }
 
 const StoreProvider=(props)=>{

@@ -63,6 +63,7 @@ const pencil = (canvas, strokeColor) => {
       if (e.width === 1) {
         isDrawing = false;
         points.length = 0;
+        ctx.globalCompositeOperation = 'source-over'
         saveActiveLayerImage(canvas.toDataURL())
       }
     },
@@ -141,6 +142,7 @@ const Canvas = () => {
       let img = new Image()
       img.src = store.layers[i].src
       img.onload = function () {
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.drawImage(img, 0, 0, el.width, el.height);
       }
     })
@@ -159,10 +161,9 @@ const Canvas = () => {
   }, [store.activeLayer,store.dpi])
 
   const canvasMap = React.useMemo(() => {
-    console.log("bla")
     return store.layers.map((_, index) => {
       let el = <canvas className={`canvas`} key={`canvas-${index.toString()}`} ref={el => itemsRef.current[index] = el} 
-        width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi} style={{ marginTop:-state.canvasHeight*(index) ,width: state.canvasWidth, height: state.canvasHeight }}/>
+        width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi} style={{ width: state.canvasWidth, height: state.canvasHeight }}/>
       return el
     })
   }, [store.activeLayer,store.layersCount,store.dpi])

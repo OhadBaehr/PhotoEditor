@@ -7,10 +7,14 @@
     height         : calc(100% - 24px);
 
     .canvas {
+        margin-top: -100%;
         box-sizing: border-box; /* required */
         flex: none; /* required */
         image-rendering   : pixelated;
         -webkit-app-region: no-drag; //fix: scrollbar not working properly when scrollY>0
+        &:first-child{
+            margin-top: unset;
+        }
     }
 }
 

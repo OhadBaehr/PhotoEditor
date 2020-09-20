@@ -7,8 +7,9 @@ function blankImage() {
 const initialState = {
     layers: [{
         src: blankImage(),
+        name: "layer 0",
         visible: true,
-        name: "layer 0"
+       
     }],
     activeLayer: 0,
     dpi:1,
@@ -23,6 +24,10 @@ const canvasStore = (state = initialState, action) => {
             return {...state,dpi:action.payload}
         case 'SET_LAYERS_COUNT':
             return {...state,layersCount:action.payload}
+        case 'SET_ACTIVE_LAYER':
+            return {...state,activeLayer:action.payload}
+        case 'SET_STORE':
+            return action.payload
         default:
             return state
     }
