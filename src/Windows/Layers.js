@@ -8,51 +8,75 @@ import { MdVisibility, MdVisibilityOff, MdLock } from 'react-icons/md'
 import { useSelector } from 'react-redux'
 import { RiEye2Fill } from 'react-icons/ri'
 import globalStore, { addLayer } from '../Store'
+import { DragDropContext, Droppable,Draggable } from 'react-beautiful-dnd'
+import {useAbuse} from 'use-abuse'
 const Layers = () => {
     const store = useSelector(store => store.canvasStore)
     const layersMap = React.useMemo(() => {
         return store.layers.map((_, index) => {
-            return <li className={`layer-item`} key={`layer-item-${index}`} >
+            let backwardsIndex=store.layers.length-1-index
+            return <Draggable draggableId={`draggable-${index}`} index={index} key={`draggable-${index}-key`}> 
+            {(provided)=>
+            <li className={`layer-item`} key={`layer-item-${backwardsIndex}`} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                 <RiEye2Fill className={`eye-icon`} />
-                <div className={`preview-name-lock-container ${index === store.activeLayer ? 'active-layer' : ''}`}
-                    onClick={()=>globalStore.dispatch({type:'SET_ACTIVE_LAYER',payload:index})}>
-                    <div className={`canvas-preview ${index === store.activeLayer ? 'active-preview' : ''}`}>
+                <div className={`preview-name-lock-container ${backwardsIndex === store.activeLayer ? 'active-layer' : ''}`}>
+                    <div className={`canvas-preview ${backwardsIndex === store.activeLayer ? 'active-preview' : ''}`}
+                        onClick={() => globalStore.dispatch({ type: 'SET_ACTIVE_LAYER', payload: backwardsIndex })}>
                         <div className={`transparent-background-mini`}>
-                            <img className={`canvas-preview-img`} src={store.layers[index].src} />
+                            <img className={`canvas-preview-img`} src={store.layers[backwardsIndex].src} />
                         </div>
                     </div>
-                    <input type="text" defaultValue={store.layers[index].name} className={`layer-name`}></input>
+                    <input type="text" defaultValue={store.layers[backwardsIndex].name} className={`layer-name`}></input>
                     <MdLock className={`lock-icon`} />
                 </div>
-            </li>
-        }).reverse()
+            </li>}
+            </Draggable>
+        })
     }, [store.activeLayer, store.layersCount, store.layers[store.activeLayer].src])
+
+    function onDragEnd(res) {
+        if (!res.destination || res.destination.index === res.source.index) {
+            return;
+        }
+        let aIndex=store.layers.length-1-res.destination.index
+        let bIndex=store.layers.length-1-res.source.index
+        let temp=store.layers[aIndex]
+        store.layers[aIndex]=store.layers[bIndex]
+        store.layers[bIndex]=temp
+        globalStore.dispatch({type:'SET_LAYERS',payload:store.layers})//TODO
+    }
+
     return (
         <>
-            <div className={`layers-container`}>
-                <nav className="layers-nav">
-                    <div className={`nav-container`}>
-                        <VscChromeClose className={`mini-icon`} />
-                    </div>
-                </nav>
-
-                <div className={`layers-options-top`}></div>
-                <ul className={`layers-list`}>
-                    {layersMap}
-
-                </ul>
-                <div className={`layers-options-bottom`}>
-                    <div className={`layers-control`}>
-                        <AiFillFolderAdd className={`layers-icon`} />
-                        <BiNote className={`layers-icon`} onClick={() => addLayer({ src: null, name: `layer ${store.layersCount}`, visible: true })} />
-                        <ImBin2 className={`layers-icon`} />
-                    </div>
+        <div className={`layers-container`}>
+            <nav className="layers-nav">
+                <div className={`nav-container`}>
+                    <VscChromeClose className={`mini-icon`} />
                 </div>
-                <div className={`dummy-scale`}>
-                    <footer className={`layers-footer`}></footer>
+            </nav>
+
+            <div className={`layers-options-top`}></div>
+            <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId={`droppable-area`}>
+                    {(provided) => 
+                    <ul className={`layers-list`} ref={provided.innerRef} {...provided.droppableProps}>
+                        {layersMap}
+                        {provided.placeholder}
+                    </ul>}
+                </Droppable>
+            </DragDropContext>
+            <div className={`layers-options-bottom`}>
+                <div className={`layers-control`}>
+                    <AiFillFolderAdd className={`layers-icon`} />
+                    <BiNote className={`layers-icon`} onClick={() => addLayer({ src: null, name: `layer ${store.layersCount}`, visible: true })} />
+                    <ImBin2 className={`layers-icon`} />
                 </div>
             </div>
-        </>
+            <div className={`dummy-scale`}>
+                <footer className={`layers-footer`}></footer>
+            </div>
+        </div>
+    </>
     )
 }
 

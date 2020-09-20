@@ -17,6 +17,7 @@ const initialState = {
 }
 
 const canvasStore = (state = initialState, action) => {
+    console.log(action.payload)
     switch (action.type) {
         case 'SET_LAYERS':
             return { ...state, layers: action.payload }

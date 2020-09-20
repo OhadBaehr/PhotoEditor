@@ -38,6 +38,7 @@ function createWindow() {
   let webContents = mainWindow.webContents
   webContents.on('did-finish-load', () => {
     webContents.setZoomFactor(1)
+    // mainWindow.webContents.send('debug', 'bloop');
     subWindowsOverlay()
   })
   mainWindow.on('closed', () => {
@@ -59,6 +60,7 @@ function createWindow() {
   mainWindow.on('maximize', () => {
     subWindowsOverlay()
     mainWindow.webContents.send('fullscreen-true', '');
+
   })
   mainWindow.on('unmaximize', () => {
     subWindowsOverlay()

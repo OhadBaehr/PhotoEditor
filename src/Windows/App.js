@@ -5,11 +5,16 @@ import ToolProperties from './App/ToolProperties'
 import './App.less'
 import globalStore from '../Store'
 
+const electron = window.require("electron")
+
 function initStorePostRender(){
     globalStore.dispatch({type:"SET_DPI",payload: window.devicePixelRatio})
 }
 function App(){
     useEffect(()=>{
+        electron.ipcRenderer.on('debug', (event, arg) => {
+            console.log(arg)
+        });
         initStorePostRender()
     },[])
     return(
