@@ -21,8 +21,8 @@ const Layers = () => {
             <li className={`layer-item`} key={`layer-${store.layers[backwardsIndex].id}-key`} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                 <RiEye2Fill className={`eye-icon`} />
                 <div className={`preview-name-lock-container ${backwardsIndex === store.activeLayer ? 'active-layer' : ''}`}>
-                    <div className={`canvas-preview ${backwardsIndex === store.activeLayer ? 'active-preview' : ''}`}
-                        onClick={() => globalStore.dispatch({ type: 'SET_ACTIVE_LAYER', payload: backwardsIndex })}>
+                    <div className={`canvas-preview ${backwardsIndex === store.activeLayer ? 'active-preview' : ''}`} key={`preview-${store.layers[backwardsIndex].id}-key`}
+                        onClick={() => globalStore.setStore({ activeLayer: backwardsIndex })}>
                         <div className={`transparent-background-mini`}>
                             <img className={`canvas-preview-img`} src={store.layers[backwardsIndex].src} />
                         </div>
@@ -33,19 +33,20 @@ const Layers = () => {
             </li>}
             </Draggable>
         })
-    }, [store.activeLayer, store.layersCount, store.layers[store.activeLayer].src,store.layers])
+    }, [store.activeLayer, store.layersCount, store.layers[store.activeLayer].src, store.layers])
 
     function onDragEnd(res) {
-            
         if (!res.destination || res.destination.index === res.source.index) {
             return;
         }
-        let len=store.layers.length
-        let indexA=len-1 - res.source.index
-        let indexB=len-1 - res.destination.index
-        let list=[...store.layers]
-        list.splice(indexB, 0, list.splice(indexA, 1)[0]);//reorder
-        globalStore.dispatch({type:'SET_LAYERS_AND_ACTIVE_LAYER',payload:{layers:list,activeLayer:indexA==store.activeLayer?indexB:store.activeLayer}})
+        globalStore.setStore(prev => {
+            let len=prev.layers.length
+            let indexA=len-1 - res.source.index
+            let indexB=len-1 - res.destination.index
+            let list=[...prev.layers]
+            list.splice(indexB, 0, list.splice(indexA, 1)[0]);//reorder
+            return {layers:list,activeLayer:indexA==prev.activeLayer?indexB:prev.activeLayer}
+        })
     }
 
     return (
@@ -63,7 +64,7 @@ const Layers = () => {
                     {(provided) => 
                     <ul className={`layers-list`} ref={provided.innerRef} {...provided.droppableProps}>
                         {layersMap}
-                        {provided.placeholder}
+                        {/* {provided.placeholder} */}
                     </ul>}
                 </Droppable>
             </DragDropContext>

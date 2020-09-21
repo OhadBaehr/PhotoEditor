@@ -166,7 +166,7 @@ const Canvas = () => {
         width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi} style={{ width: state.canvasWidth, height: state.canvasHeight }}/>
       return el
     })
-  }, [store.activeLayer,store.layersCount,store.dpi])
+  }, [store.activeLayer,store.layersCount,store.dpi,store.layers])
   return (
       <div className={`canvas-container`} style={{ minHeight: state.canvasHeight + 100 }} ref={canvasContainer}>
         <div className={`transparent-background`} style={{ width: state.canvasWidth, height: state.canvasHeight }}>

@@ -17,22 +17,12 @@ const initialState = {
 }
 
 const canvasStore = (state = initialState, action) => {
-    console.log(action.payload)
-    switch (action.type) {
-        case 'SET_LAYERS':
-            return { ...state, layers: action.payload}
-        case 'SET_DPI':
-            return {...state,dpi:action.payload}
-        case 'SET_LAYERS_COUNT':
-            return {...state,layersCount:action.payload}
-        case 'SET_ACTIVE_LAYER':
-            return {...state,activeLayer:action.payload}
-        case 'SET_STORE':
-            return action.payload
-        case 'SET_LAYERS_AND_ACTIVE_LAYER':
-            return { ...state, layers: action.payload.layers,activeLayer:action.payload.activeLayer}
-        default:
-            return state
+    console.log('state',state)
+    console.log('payload',action.payload)
+    const {payload} = action
+    return {
+        ...state,
+        ...(typeof payload === "function" ? payload(state) : payload)
     }
 }
 

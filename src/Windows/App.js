@@ -8,7 +8,7 @@ import globalStore from '../Store'
 const electron = window.require("electron")
 
 function initStorePostRender(){
-    globalStore.dispatch({type:"SET_DPI",payload: window.devicePixelRatio})
+    globalStore.setStore({dpi:window.devicePixelRatio})
 }
 function App(){
     useEffect(()=>{
