@@ -158,7 +158,7 @@ const Canvas = () => {
       canvasContainer.current.removeEventListener("pointermove", tool.onPointerMove)
       canvasContainer.current.removeEventListener("pointerdown", tool.onPointerDown)
     }
-  }, [store.activeLayer,store.dpi])
+  }, [store.activeLayer,store.layersCount,store.dpi,store.layers])
 
   const canvasMap = React.useMemo(() => {
     return store.layers.map((_, index) => {

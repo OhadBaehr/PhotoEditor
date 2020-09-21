@@ -17,12 +17,11 @@ const initialState = {
 }
 
 const canvasStore = (state = initialState, action) => {
-    console.log('state',state)
-    console.log('payload',action.payload)
     const {payload} = action
+    console.log(payload)
     return {
         ...state,
-        ...(typeof payload === "function" ? payload(state) : payload)
+        ...(typeof payload === "function" ? paypayload(state) : payload)
     }
 }
 

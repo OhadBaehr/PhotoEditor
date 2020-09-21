@@ -14,6 +14,7 @@ import { v1 } from 'uuid';
 const Layers = () => {
     const store = useSelector(store => store.canvasStore)
     const layersMap = React.useMemo(() => {
+        console.log("bla")
         return store.layers.map((_, index) => {
             let backwardsIndex=store.layers.length-1-index
             return <Draggable draggableId={`draggable-${index}`} index={index} key={`draggable-${index}`}> 
@@ -39,18 +40,18 @@ const Layers = () => {
         if (!res.destination || res.destination.index === res.source.index) {
             return;
         }
-        globalStore.setStore(prev => {
-            let len=prev.layers.length
-            let origin=len-1 - res.source.index
-            let dest=len-1 - res.destination.index
-            let list=[...prev.layers]
-            list.splice(dest, 0, list.splice(origin, 1)[0]);//reorder
-            console.log("activeLayer:", prev.activeLayer,'origin',origin,'dest',dest,'len',len)
-            if( prev.activeLayer==origin)  prev.activeLayer=dest
-            else if(origin> prev.activeLayer && dest< prev.activeLayer)  prev.activeLayer+=1
-            else  if(dest> prev.activeLayer && origin< prev.activeLayer)  prev.activeLayer-=1
-            return {layers:list,activeLayer: prev.activeLayer}
-        })
+        let len=store.layers.length
+        let origin=len-1 - res.source.index
+        let dest=len-1 - res.destination.index
+        let list=[...store.layers]
+        list.splice(dest, 0, list.splice(origin, 1)[0]);//reorder
+        console.log("activeLayer:", store.activeLayer,'origin',origin,'dest',dest,'len',len)
+        if( store.activeLayer==origin)  store.activeLayer=dest
+        else if(origin> store.activeLayer && dest< store.activeLayer || (dest==store.activeLayer && origin>store.activeLayer))  store.activeLayer+=1
+        else if(dest> store.activeLayer && origin< store.activeLayer || (dest==store.activeLayer && origin<store.activeLayer))  store.activeLayer-=1
+        
+        globalStore.setStore({layers:list,activeLayer: store.activeLayer},'local')
+        globalStore.setStore({layers:list,activeLayer: store.activeLayer})
     }
 
     return (

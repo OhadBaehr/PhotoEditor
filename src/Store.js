@@ -7,12 +7,12 @@ import { Provider } from 'react-redux';
 const initialState = remote.getGlobal('state')
 const globalStore = configureStore(initialState, 'renderer');
 
-globalStore.setStore = payload => {
+globalStore.setStore = (payload,local=null) => {
     if (typeof payload === "function") {
         const prev = globalStore.getState().canvasStore
-        return globalStore.dispatch({ type: 'PLACEHOLDER', payload: payload(prev) })
+        return globalStore.dispatch({ type: 'PLACEHOLDER', payload: payload(prev) , meta:{scope: local}})
     }
-    return globalStore.dispatch({ type: 'PLACEHOLDER', payload })
+    return globalStore.dispatch({ type: 'PLACEHOLDER', payload, meta:{scope: local} })
 }
 
 function saveActiveLayerImage(newImage) {
@@ -31,7 +31,7 @@ function saveActiveLayerImage(newImage) {
 function addLayer(layer) {
     let store = globalStore.getState().canvasStore
     store.layers.push(layer)
-    store.activeLayer = store.layersCount
+    // store.activeLayer = store.layersCount
     store.layersCount += 1
     globalStore.setStore(store)
 }
