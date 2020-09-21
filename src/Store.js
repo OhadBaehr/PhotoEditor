@@ -10,9 +10,11 @@ const globalStore = configureStore(initialState, 'renderer');
 globalStore.setStore = (payload,local=null) => {
     if (typeof payload === "function") {
         const prev = globalStore.getState().canvasStore
-        return globalStore.dispatch({ type: 'PLACEHOLDER', payload: payload(prev) , meta:{scope: local}})
+        globalStore.dispatch({ type: 'PLACEHOLDER', payload: payload(prev) , meta:{scope: local}})
+    }else{
+        globalStore.dispatch({ type: 'PLACEHOLDER', payload, meta:{scope: 'local'} })
+        globalStore.dispatch({ type: 'PLACEHOLDER', payload})
     }
-    return globalStore.dispatch({ type: 'PLACEHOLDER', payload, meta:{scope: local} })
 }
 
 function saveActiveLayerImage(newImage) {

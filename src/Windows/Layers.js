@@ -50,7 +50,6 @@ const Layers = () => {
         else if(origin> store.activeLayer && dest< store.activeLayer || (dest==store.activeLayer && origin>store.activeLayer))  store.activeLayer+=1
         else if(dest> store.activeLayer && origin< store.activeLayer || (dest==store.activeLayer && origin<store.activeLayer))  store.activeLayer-=1
         
-        globalStore.setStore({layers:list,activeLayer: store.activeLayer},'local')
         globalStore.setStore({layers:list,activeLayer: store.activeLayer})
     }
 
