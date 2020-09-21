@@ -1,13 +1,16 @@
 const { app, BrowserWindow, ipcMain} = require('electron')
 const {configureStore} = require('../src/store/configureStore')
+const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
+
 //const path = require('path')
 //const url = require('url')
 
-//global.state = {}
+global.state = {}
 const setupStore = ()=>{
-  configureStore(undefined, 'main');
-  // const store = configureStore(global.state, 'main');
-  //global.state = store.getState();
+  //configureStore(undefined, 'main');
+  const store = configureStore(global.state, 'main');
+  global.state = store.getState();
+  installExtension(REDUX_DEVTOOLS)
 }
 
 ipcMain.on('runCommand', async (event, arg) => {
