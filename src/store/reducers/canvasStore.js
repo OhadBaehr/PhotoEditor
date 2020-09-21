@@ -29,6 +29,8 @@ const canvasStore = (state = initialState, action) => {
             return {...state,activeLayer:action.payload}
         case 'SET_STORE':
             return action.payload
+        case 'SET_LAYERS_AND_ACTIVE_LAYER':
+            return { ...state, layers: action.payload.layers,activeLayer:action.payload.activeLayer}
         default:
             return state
     }

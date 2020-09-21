@@ -18,7 +18,7 @@ const Layers = () => {
             let backwardsIndex=store.layers.length-1-index
             return <Draggable draggableId={`draggable-${index}`} index={index} key={`draggable-${index}`}> 
             {(provided)=>
-            <li className={`layer-item`} key={`layer-${store.layers[backwardsIndex].id}`} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+            <li className={`layer-item`} key={`layer-${store.layers[backwardsIndex].id}-key`} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                 <RiEye2Fill className={`eye-icon`} />
                 <div className={`preview-name-lock-container ${backwardsIndex === store.activeLayer ? 'active-layer' : ''}`}>
                     <div className={`canvas-preview ${backwardsIndex === store.activeLayer ? 'active-preview' : ''}`}
@@ -33,28 +33,19 @@ const Layers = () => {
             </li>}
             </Draggable>
         })
-    }, [store.activeLayer, store.layersCount, store.layers[store.activeLayer].src])
-
-
-    const reorder = (list, startIndex, endIndex) => {
-        const result = Array.from(list);
-        const [removed] = result.splice(startIndex, 1);
-        result.splice(endIndex, 0, removed);
-        
-        return result;
-    };
+    }, [store.activeLayer, store.layersCount, store.layers[store.activeLayer].src,store.layers])
 
     function onDragEnd(res) {
+            
         if (!res.destination || res.destination.index === res.source.index) {
             return;
         }
-        let aIndex=store.layers.length-1-res.destination.index
-        let bIndex=store.layers.length-1-res.source.index
-        let temp=store.layers[aIndex]
-        store.layers[aIndex]=store.layers[bIndex]
-        store.layers[bIndex]=temp
-        console.log(store.layers[aIndex],store.layers[bIndex])
-        globalStore.dispatch({type:'SET_LAYERS',payload:store.layers})
+        let len=store.layers.length
+        let indexA=len-1 - res.source.index
+        let indexB=len-1 - res.destination.index
+        let list=[...store.layers]
+        list.splice(indexB, 0, list.splice(indexA, 1)[0]);//reorder
+        globalStore.dispatch({type:'SET_LAYERS_AND_ACTIVE_LAYER',payload:{layers:list,activeLayer:indexA==store.activeLayer?indexB:store.activeLayer}})
     }
 
     return (
