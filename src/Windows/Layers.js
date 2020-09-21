@@ -41,11 +41,15 @@ const Layers = () => {
         }
         globalStore.setStore(prev => {
             let len=prev.layers.length
-            let indexA=len-1 - res.source.index
-            let indexB=len-1 - res.destination.index
+            let origin=len-1 - res.source.index
+            let dest=len-1 - res.destination.index
             let list=[...prev.layers]
-            list.splice(indexB, 0, list.splice(indexA, 1)[0]);//reorder
-            return {layers:list,activeLayer:indexA==prev.activeLayer?indexB:prev.activeLayer}
+            list.splice(dest, 0, list.splice(origin, 1)[0]);//reorder
+            console.log("activeLayer:", prev.activeLayer,'origin',origin,'dest',dest,'len',len)
+            if( prev.activeLayer==origin)  prev.activeLayer=dest
+            else if(origin> prev.activeLayer && dest< prev.activeLayer)  prev.activeLayer+=1
+            else  if(dest> prev.activeLayer && origin< prev.activeLayer)  prev.activeLayer-=1
+            return {layers:list,activeLayer: prev.activeLayer}
         })
     }
 
@@ -64,7 +68,7 @@ const Layers = () => {
                     {(provided) => 
                     <ul className={`layers-list`} ref={provided.innerRef} {...provided.droppableProps}>
                         {layersMap}
-                        {/* {provided.placeholder} */}
+                        {provided.placeholder}
                     </ul>}
                 </Droppable>
             </DragDropContext>
