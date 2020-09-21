@@ -162,7 +162,7 @@ const Canvas = () => {
 
   const canvasMap = React.useMemo(() => {
     return store.layers.map((_, index) => {
-      let el = <canvas className={`canvas`} key={`canvas-${index.toString()}`} ref={el => itemsRef.current[index] = el} 
+      let el = <canvas className={`canvas`} key={`canvas-${store.layers[index].id}`} ref={el => itemsRef.current[index] = el} 
         width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi} style={{ width: state.canvasWidth, height: state.canvasHeight }}/>
       return el
     })

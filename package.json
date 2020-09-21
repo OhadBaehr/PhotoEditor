@@ -23,7 +23,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "redux": "^4.0.5",
-    "use-abuse": "^1.1.5"
+    "use-abuse": "^1.1.5",
+    "uuid": "^8.3.0"
   },
   "scripts": {
     "start": "nf start -p 3000",
