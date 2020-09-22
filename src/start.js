@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain} = require('electron')
-const {configureStore} = require('../src/store/configureStore')
+const {configureStore} = require('./Store/configureStore')
 //const path = require('path')
 //const url = require('url')
 

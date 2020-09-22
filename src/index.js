@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import './index.less'
 import './globals.less'
-import ViewManager from './ViewManager';
-import {StoreProvider} from './Store'
+import ViewManager from './Windows/ViewManager';
+import {StoreProvider} from './Store/StoreFuncs'
 ReactDOM.render(
   <React.StrictMode>
       <StoreProvider>

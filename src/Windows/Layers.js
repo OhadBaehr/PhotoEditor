@@ -7,10 +7,13 @@ import { ImBin2, ImEye } from 'react-icons/im'
 import { MdVisibility, MdVisibilityOff, MdLock } from 'react-icons/md'
 import { useSelector } from 'react-redux'
 import { RiEye2Fill } from 'react-icons/ri'
-import globalStore, { addLayer } from '../Store'
+import globalStore, { addLayer } from '../Store/StoreFuncs'
 import { DragDropContext, Droppable,Draggable } from 'react-beautiful-dnd'
 import {useAbuse} from 'use-abuse'
 import { v1 } from 'uuid';
+
+
+
 const Layers = () => {
     const store = useSelector(store => store.canvasStore)
     const layersMap = React.useMemo(() => {
@@ -18,8 +21,10 @@ const Layers = () => {
         return store.layers.map((_, index) => {
             let backwardsIndex=store.layers.length-1-index
             return <Draggable draggableId={`draggable-${index}`} index={index} key={`draggable-${index}`}> 
-            {(provided)=>
-            <li className={`layer-item`} key={`layer-${store.layers[backwardsIndex].id}-key`} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+            {(provided, snapshot) => (
+            <li className={`layer-item`} key={`layer-${store.layers[backwardsIndex].id}-key`} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}
+            isDragging={snapshot.isDragging && !snapshot.isDropAnimating}
+            style={{...provided.draggableProps.style,height:30/*fix jitter*/}}>
                 <RiEye2Fill className={`eye-icon`} />
                 <div className={`preview-name-lock-container ${backwardsIndex === store.activeLayer ? 'active-layer' : ''}`}>
                     <div className={`canvas-preview ${backwardsIndex === store.activeLayer ? 'active-preview' : ''}`} key={`preview-${store.layers[backwardsIndex].id}-key`}
@@ -31,7 +36,7 @@ const Layers = () => {
                     <input type="text" defaultValue={store.layers[backwardsIndex].name} className={`layer-name`}></input>
                     <MdLock className={`lock-icon`} />
                 </div>
-            </li>}
+            </li>)}
             </Draggable>
         })
     }, [store.activeLayer, store.layersCount, store.layers[store.activeLayer].src, store.layers])
@@ -45,7 +50,6 @@ const Layers = () => {
         let dest=len-1 - res.destination.index
         let list=[...store.layers]
         list.splice(dest, 0, list.splice(origin, 1)[0]);//reorder
-        console.log("activeLayer:", store.activeLayer,'origin',origin,'dest',dest,'len',len)
         if( store.activeLayer==origin)  store.activeLayer=dest
         else if(origin> store.activeLayer && dest< store.activeLayer || (dest==store.activeLayer && origin>store.activeLayer))  store.activeLayer+=1
         else if(dest> store.activeLayer && origin< store.activeLayer || (dest==store.activeLayer && origin<store.activeLayer))  store.activeLayer-=1
@@ -65,11 +69,11 @@ const Layers = () => {
             <div className={`layers-options-top`}></div>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId={`droppable-area`}>
-                    {(provided) => 
-                    <ul className={`layers-list`} ref={provided.innerRef} {...provided.droppableProps}>
-                        {layersMap}
-                        {provided.placeholder}
-                    </ul>}
+                    {(provided, snapshot) => (
+                        <ul className={`layers-list`} ref={provided.innerRef} {...provided.droppableProps} style={null}>
+                            {layersMap}
+                            {provided.placeholder}
+                        </ul>)}
                 </Droppable>
             </DragDropContext>
             <div className={`layers-options-bottom`}>

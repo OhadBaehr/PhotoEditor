@@ -1,5 +1,5 @@
 import React from 'react'
-import { configureStore } from "./store/configureStore";
+import { configureStore } from "./configureStore";
 import { remote } from 'electron';
 
 import { Provider } from 'react-redux';

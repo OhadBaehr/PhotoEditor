@@ -3,7 +3,7 @@ import Nav from './App/Nav'
 import Canvas from './App/Canvas'
 import ToolProperties from './App/ToolProperties'
 import './App.less'
-import globalStore from '../Store'
+import globalStore from '../Store/StoreFuncs'
 
 const electron = window.require("electron")
 

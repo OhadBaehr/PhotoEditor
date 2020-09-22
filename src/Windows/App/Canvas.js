@@ -4,7 +4,7 @@ import ToolProperties from './ToolProperties'
 import './Canvas.less'
 import ReactDOM from 'react-dom';
 import { useSelector } from 'react-redux'
-import globalStore, { saveActiveLayerImage } from '../../Store'
+import globalStore, { saveActiveLayerImage } from '../../Store/StoreFuncs'
 var history = {
   redo_list: [],
   undo_list: [],
