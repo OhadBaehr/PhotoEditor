@@ -51,6 +51,8 @@ const Nav=() =>{
     )
   }, [])
   const lastEntry = state.menus[state.menus.length - hiddenElements - 1]
+  const hiddenEntry = state.menus[state.menus.length - hiddenElements]
+  console.log(hiddenEntry)
   useEffect(() => {
     electron.ipcRenderer.on('fullscreen-true', (event, arg) => {
       setState({fullscreen:true})
@@ -69,8 +71,8 @@ const Nav=() =>{
               <MenuItem label={item.label} onVis={(visible, entry) => setMenuItemVisible(item.label, visible, entry)} />
             </li>
           ))}
-          {hiddenElements > 0 && lastEntry &&
-            <div className={`overflow-indicator`} style={{ left: lastEntry.entry.target.offsetLeft + lastEntry.entry.target.offsetWidth }}>
+          {hiddenElements > 0 && lastEntry && hiddenEntry.entry &&
+            <div className={`overflow-indicator`} style={{ left: lastEntry.entry.target.offsetLeft + lastEntry.entry.target.offsetWidth,width:hiddenEntry.entry.boundingClientRect.width+8 }}>
               <BsThreeDots className={`three-dots nav-button `} />
             </div>
           }

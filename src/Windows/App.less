@@ -10,6 +10,13 @@
       border-left:6px solid  rgb(83, 85, 83);
       border-bottom:7px solid  rgb(83, 85, 83);
     }
+    .light&{
+        box-shadow: -1px 2px 0px 18px rgba(202, 197, 197, 0.8);
+        background:rgb(207, 207, 202);
+        border-right:6px solid  rgb(116, 122, 116);
+        border-left:6px solid  rgb(116, 122, 116);
+        border-bottom:7px solid rgb(116, 122, 116);
+    }
     .inner-app-container{
         height         : calc(100vh - @navHeight - 11px);
         overflow: -moz-scrollbars-vertical; 
@@ -25,6 +32,9 @@
             .dark&{
               background                :rgb(83, 85, 83);
             }
+            .light&{
+              background                :rgb(182, 190, 182);
+            }
           }
       
           &::-webkit-scrollbar-thumb:vertical {            
@@ -35,12 +45,21 @@
               background-color: rgb(133, 122, 122);
               outline         : 1px solid slategrey;
             }
+            .light&{
+              background-color: rgb(133, 122, 122);
+              outline         : 1px solid slategrey;
+            }
           }
           
           &::-webkit-scrollbar-thumb:horizontal {
             border-top:none;
             border-radius   : 3px 3px 5px 5px;
             .dark&{
+              background-color: rgb(133, 122, 122);
+              outline         : 1px solid slategrey;
+              border:0.7px solid rgb(63, 61, 61);
+            }
+            .light&{
               background-color: rgb(133, 122, 122);
               outline         : 1px solid slategrey;
               border:0.7px solid rgb(63, 61, 61);
@@ -55,14 +74,23 @@
               .dark&{
                 background:rgb(63, 61, 61);
               }
+              .light&{
+                background:rgb(63, 61, 61);
+              }
           }
           &::-webkit-scrollbar-track-piece:horizontal {
             .dark&{
               background:rgb(63, 61, 61);
             }
+            .light&{
+              background:rgb(63, 61, 61);
+            }
           }
           &::-webkit-scrollbar-corner{
             .dark&{
+              background:rgb(71, 68, 68);
+            }
+            .light&{
               background:rgb(71, 68, 68);
             }
           }
