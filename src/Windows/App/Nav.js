@@ -4,7 +4,8 @@ import { useAbuse } from 'use-abuse'
 import { useInView } from 'react-intersection-observer'
 import { VscChromeMinimize, VscChromeMaximize, VscChromeRestore, VscChromeClose } from 'react-icons/vsc';
 import { BsThreeDots } from 'react-icons/bs'
-// import constants from './constants'
+import { useSelector } from 'react-redux'
+
 import './Nav.less'
 const electron = window.require("electron")
 
@@ -36,6 +37,8 @@ const initMenus = [
   { label: 'Help'},
 ]
 const Nav=() =>{
+  const store = useSelector(store => store)
+  const theme=store.settings.theme
   const [state, setState] = useAbuse({
     fullscreen: false,
     menus: initMenus
@@ -57,7 +60,7 @@ const Nav=() =>{
     });
   }, []);
   return (
-    <nav className={'app-nav'}>
+    <nav className={`app-nav ${theme}`}>
       <div className={`nav-container`}>
         <img src={logo} alt={`logo`} className={`nav-logo`}></img>
         <ul className={`nav-actions nav-overflow-container`}>

@@ -3,60 +3,68 @@
   @navHeight:2px;
 }
 .app-container{
-    //border-radius: 6px;
-    box-shadow: -1px 2px 0px 18px rgba(0,0,0,0.8);
-    // height:calc(100vh - 7px); //6px + 2px of the border
-    background:rgb(31, 31, 30);
-    border-right:6px solid  rgb(83, 85, 83);
-    border-left:6px solid  rgb(83, 85, 83);
-    border-bottom:7px solid  rgb(83, 85, 83);
+    .dark&{
+      box-shadow: -1px 2px 0px 18px rgba(0,0,0,0.8);
+      background:rgb(31, 31, 30);
+      border-right:6px solid  rgb(83, 85, 83);
+      border-left:6px solid  rgb(83, 85, 83);
+      border-bottom:7px solid  rgb(83, 85, 83);
+    }
     .inner-app-container{
         height         : calc(100vh - @navHeight - 11px);
         overflow: -moz-scrollbars-vertical; 
         overflow-y: scroll;
         overflow-x: scroll;
         &::-webkit-scrollbar {
-            // display : none;
             width: 13px;
             height:13px;
           }
       
           &::-webkit-scrollbar-track {
             display                   : block;
-            // display                : none;
-            background                :rgb(83, 85, 83);
+            .dark&{
+              background                :rgb(83, 85, 83);
+            }
           }
       
-          &::-webkit-scrollbar-thumb:vertical {
-            //display         : none;
-            background-color: rgb(133, 122, 122);
-            outline         : 1px solid slategrey;
+          &::-webkit-scrollbar-thumb:vertical {            
             border:0.7px solid rgb(63, 61, 61);
             border-left:none;
-            border-radius   : 2px 8px 5px 3px
+            border-radius   : 2px 8px 5px 3px;
+            .dark&{
+              background-color: rgb(133, 122, 122);
+              outline         : 1px solid slategrey;
+            }
           }
           
           &::-webkit-scrollbar-thumb:horizontal {
-            //display         : none;
-            background-color: rgb(133, 122, 122);
-            outline         : 1px solid slategrey;
-            border:0.7px solid rgb(63, 61, 61);
             border-top:none;
             border-radius   : 3px 3px 5px 5px;
+            .dark&{
+              background-color: rgb(133, 122, 122);
+              outline         : 1px solid slategrey;
+              border:0.7px solid rgb(63, 61, 61);
+            }
           }
           &::-webkit-scrollbar-track-piece:start {
                     margin-top      : 0.3px;
           }
       
           &::-webkit-scrollbar-track-piece:vertical {
-              background:rgb(63, 61, 61);
               border-radius:0 8px 0 0;
+              .dark&{
+                background:rgb(63, 61, 61);
+              }
           }
           &::-webkit-scrollbar-track-piece:horizontal {
-            background:rgb(63, 61, 61);
+            .dark&{
+              background:rgb(63, 61, 61);
+            }
           }
           &::-webkit-scrollbar-corner{
+            .dark&{
               background:rgb(71, 68, 68);
+            }
           }
         }
 }

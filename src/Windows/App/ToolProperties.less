@@ -1,15 +1,19 @@
 .tool-properties-container{
     width:100%;
-    background:rgb(83, 85, 83);
     height:24px;
     position: sticky;
     top:0;
     -webkit-app-region : drag;
-    .options-bar{
+    .dark&{
         background:rgb(83, 85, 83);
-        border:1px solid rgb(71, 68, 68);
+    }
+    .options-bar{
         height:100%;
         border-radius: 7px 0 0 0;
+        .dark&{
+            border:1px solid rgb(71, 68, 68);
+            background:rgb(83, 85, 83);
+        }
     }
    
 }

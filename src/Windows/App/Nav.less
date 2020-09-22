@@ -1,17 +1,20 @@
 @import  '../../constants.less';
 .app-nav{
-    border-top:2px solid rgb(83, 85, 83);
-    border-bottom:2px solid rgb(83, 85, 83);
+    .dark&{
+        border-top:2px solid rgb(83, 85, 83);
+        border-bottom:2px solid rgb(83, 85, 83);
+    }
     .nav-container {
         -webkit-user-select: none;
         -webkit-app-region : drag;
         display            : flex;
         align-items        : center;
         justify-content    : center;
-        background         : rgb(83, 85, 83);
         width              : 100%;
         height             : @navHeight;
-
+        .dark&{
+            background         : rgb(83, 85, 83);
+        }
         .nav-logo {
             height:@navHeight;
         }
@@ -32,12 +35,15 @@
 
             .nav-button {
                 -webkit-app-region: no-drag;
-                background        : rgb(85, 85, 83);
-                color             : rgb(222, 222, 223);
                 padding           : 6px 10px 6px 10px;
-
+                .dark&{
+                    background        : rgb(85, 85, 83);
+                    color             : rgb(222, 222, 223);
+                }
                 &:hover {
-                    background: rgb(114, 114, 110);
+                    .dark&{
+                        background: rgb(114, 114, 110);
+                    }
                 }
 
                 &.setting {
@@ -48,16 +54,20 @@
 
                 &.exit {
                     &:hover {
-                        background: rgb(218, 16, 16);
-                        color     : white;
+                        .dark&{
+                            background: rgb(218, 16, 16);
+                            color     : white;
+                        }
                     }
                 }
                 
             }
             .overflow-indicator{
-                color:white;
                 position: absolute;
                 margin-left:8px;
+                .dark&{
+                    color:white;
+                }
                 .three-dots{
                     padding-top:7px;
                     padding-bottom: 7px;

@@ -46,7 +46,7 @@ var history = {
 
 const pencil = (canvas, strokeColor) => {
   let ctx = canvas.getContext("2d")
-  let dpi=globalStore.getState().canvasStore.dpi
+  let dpi=globalStore.getState().canvas.dpi
   ctx.lineWidth = 20;
   ctx.lineJoin = ctx.lineCap = 'round';
   ctx.strokeStyle = "rgba(0,0,0,0.75)"
@@ -118,7 +118,7 @@ const pencil = (canvas, strokeColor) => {
 
 
 const Canvas = () => {
-  const store = useSelector(store => store.canvasStore)
+  const store = useSelector(store => store.canvas)
   const [state, setState] = useAbuse({ strokeColor: "rgba(0,0,0,0.5)", canvasHeight: 400, canvasWidth: 400 })
   let canvas = null
   const itemsRef = useRef([]);

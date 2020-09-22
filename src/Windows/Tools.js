@@ -8,15 +8,18 @@ import {FaStamp} from 'react-icons/fa'
 import {CgColorBucket,CgBandAid} from 'react-icons/cg'
 import {VscChromeClose} from 'react-icons/vsc'
 import {TiZoom} from 'react-icons/ti'
+import { useSelector } from 'react-redux'
 const Tools = () => {
+    const store = useSelector(store => store)
+    const theme=store.settings.theme
     return(
-        <>
+        <div className={`tools-container ${theme}`}>
         <div className="tools-nav drag-scale-fix">
             <div className={`nav-container`}>
                 <VscChromeClose className={`mini-icon`}/>
             </div>
         </div>
-        <div className={'tools-container'}>
+        <div className={'tools-icons-container'}>
             <div className={`icons-container`}>
                 <IoMdColorWand className={`tools-icon`}/>
                 <BiScreenshot className={`tools-icon`}/>
@@ -40,7 +43,7 @@ const Tools = () => {
                 <div className={`secondary-color`}></div>
             </div>
         </div>
-        </>
+        </div>
     )
 }
 

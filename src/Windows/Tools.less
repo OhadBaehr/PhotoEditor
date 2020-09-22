@@ -1,70 +1,91 @@
 @import '../constants.less';
 
-.tools-nav{
-    border-radius:7px 7px 0 0;
-    background         : rgb(71, 71, 69);
-    width              : 100%;
-    height             : 14px;
-    -webkit-app-region : drag;
-    .nav-container {
-        -webkit-user-select: none;
-        display            : flex;
-        align-items        : center;
-        justify-content    : center;
+.tools-container {
+    .tools-nav {
+        border-radius     : 7px 7px 0 0;
+        width             : 100%;
+        height            : 14px;
+        -webkit-app-region: drag;
+        .dark&{
+            background        : rgb(71, 71, 69);
+        }
+        .nav-container {
+            -webkit-user-select: none;
+            display            : flex;
+            align-items        : center;
+            justify-content    : center;
 
+        }
     }
-}
 
-.tools-container{
-    -webkit-app-region : drag;
-    border-radius:0 0 7px 7px;
-    background:rgb(83, 85, 83);
-    height:calc(100vh - 17px);
-    .icons-container{
-        padding-top:6px;
-        display:flex;
-        justify-content: center;
-        flex-wrap:wrap;
-        .tools-icon{
-            -webkit-app-region : no-drag;
-            color:rgb(216, 210, 210);
-            font-size:17px;
-            margin:1px;
-            padding:5px;
-            &:hover {
-                background:rgb(75, 71, 71);
-                outline:1px solid rgba(116, 115, 112, 0.5);
+    .tools-icons-container {
+        -webkit-app-region: drag;
+        border-radius     : 0 0 7px 7px;
+        height            : calc(100vh - 17px);
+        .dark&{
+            background        : rgb(83, 85, 83);
+        }
+        .icons-container {
+            padding-top    : 6px;
+            display        : flex;
+            justify-content: center;
+            flex-wrap      : wrap;
+
+            .tools-icon {
+                -webkit-app-region: no-drag;
+                font-size         : 17px;
+                margin            : 1px;
+                padding           : 5px;
+                .dark&{
+                    color             : rgb(216, 210, 210);
+                }
+                &:hover {
+                    .dark&{
+                        background: rgb(75, 71, 71);
+                        outline   : 1px solid rgba(116, 115, 112, 0.5);
+                    }
+                }
             }
         }
-    }
-    .stroke-colors-container{
-        margin-top:23px;
-        display: flex;
-        justify-content: center;
-        .arrow90deg{
-            position: absolute;
-            color:white;
-            margin-top:-14px;
-            margin-left:14px;
-            font-size:12px;
-        }
-        .primary-color{
-            position: absolute;
-            margin-top:-15px;
-            margin-left:-7px;
-            width:24px;
-            height:24px;
-            background:black;
-            border:1px solid rgb(209, 206, 206);
-            outline:1px solid rgba(0, 0, 0, 0.205);
-        }
-        .secondary-color{
-            width:24px;
-            height:24px;
-            background:white;
-            border:1px solid rgb(209, 206, 206);
-            outline:1px solid rgba(0, 0, 0, 0.205);
-            margin-left:13px;
+
+        .stroke-colors-container {
+            margin-top     : 23px;
+            display        : flex;
+            justify-content: center;
+
+            .arrow90deg {
+                position   : absolute;
+                margin-top : -14px;
+                margin-left: 14px;
+                font-size  : 12px;
+                .dark&{
+                    color      : white;
+                }
+            }
+
+            .primary-color {
+                position   : absolute;
+                margin-top : -15px;
+                margin-left: -7px;
+                width      : 24px;
+                height     : 24px;
+                background : black; //TODO
+                .dark&{
+                    border     : 1px solid rgb(209, 206, 206);
+                    outline    : 1px solid rgba(0, 0, 0, 0.205);
+                }
+            }
+
+            .secondary-color {
+                width      : 24px;
+                height     : 24px;
+                margin-left: 13px;
+                background : white; //TODO
+                .dark&{
+                    border     : 1px solid rgb(209, 206, 206);
+                    outline    : 1px solid rgba(0, 0, 0, 0.205);
+                }
+            }
         }
     }
 }
