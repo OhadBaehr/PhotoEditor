@@ -40,6 +40,17 @@ function addLayer(layer) {
     globalStore.setStore(store)
 }
 
+function deleteLayer(activeLayer) {
+    let store = globalStore.getState().canvas
+    if(store.layers.length){
+        store.layersCount -= 1
+        store.layers.splice(activeLayer,1)
+        if(store.activeLayer>0) store.activeLayer-=1
+        else store.activeLayer=0
+        globalStore.setStore(store)
+    }
+}
+
 const StoreProvider = (props) => {
     return (
         <Provider store={globalStore}>
@@ -47,5 +58,5 @@ const StoreProvider = (props) => {
         </Provider>
     )
 }
-export { StoreProvider, saveActiveLayerImage, addLayer }
+export { StoreProvider, saveActiveLayerImage, addLayer,deleteLayer }
 export default globalStore;

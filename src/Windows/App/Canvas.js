@@ -134,31 +134,33 @@ const Canvas = () => {
   }
 
   useEffect(() => {
-    itemsRef.current = itemsRef.current.slice(0, store.layers.length);
-    //Here we set up the properties of the canvas element. 
-    itemsRef.current.map((el, i) => {
-      let ctx = el.getContext('2d')
-      let img = new Image()
-      img.src = store.layers[i].src
-      img.onload = function () {
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.drawImage(img, 0, 0, el.width, el.height);
-      }
-    })
-    if(store.layers[store.activeLayer].visible){
-      canvas = itemsRef.current[store.activeLayer]
-      tool = pencil(canvas, state.strokeColor)
-      canvasContainer.current.addEventListener("pointermove", tool.onPointerMove)
-      canvasContainer.current.addEventListener("pointerdown", tool.onPointerDown)
-      window.addEventListener('pointerup', tool.onPointerUp);
-    }
-    window.addEventListener('keydown', handleCommands);
-    return () => {
-      window.removeEventListener('keydown', handleCommands);
+    if(store.layers.length){
+      itemsRef.current = itemsRef.current.slice(0, store.layers.length);
+      //Here we set up the properties of the canvas element. 
+      itemsRef.current.map((el, i) => {
+        let ctx = el.getContext('2d')
+        let img = new Image()
+        img.src = store.layers[i].src
+        img.onload = function () {
+          ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          ctx.drawImage(img, 0, 0, el.width, el.height);
+        }
+      })
       if(store.layers[store.activeLayer].visible){
-        window.removeEventListener('pointerup', tool.onPointerUp);
-        canvasContainer.current.removeEventListener("pointermove", tool.onPointerMove)
-        canvasContainer.current.removeEventListener("pointerdown", tool.onPointerDown)
+        canvas = itemsRef.current[store.activeLayer]
+        tool = pencil(canvas, state.strokeColor)
+        canvasContainer.current.addEventListener("pointermove", tool.onPointerMove)
+        canvasContainer.current.addEventListener("pointerdown", tool.onPointerDown)
+        window.addEventListener('pointerup', tool.onPointerUp);
+      }
+      window.addEventListener('keydown', handleCommands);
+      return () => {
+        window.removeEventListener('keydown', handleCommands);
+        if(store.layers[store.activeLayer].visible){
+          window.removeEventListener('pointerup', tool.onPointerUp);
+          canvasContainer.current.removeEventListener("pointermove", tool.onPointerMove)
+          canvasContainer.current.removeEventListener("pointerdown", tool.onPointerDown)
+        }
       }
     }
   }, [store.activeLayer,store.layersCount,store.dpi,store.layers])

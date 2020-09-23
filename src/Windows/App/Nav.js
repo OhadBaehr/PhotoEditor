@@ -52,7 +52,6 @@ const Nav=() =>{
   }, [])
   const lastEntry = state.menus[state.menus.length - hiddenElements - 1]
   const hiddenEntry = state.menus[state.menus.length - hiddenElements]
-  console.log(hiddenEntry)
   useEffect(() => {
     electron.ipcRenderer.on('fullscreen-true', (event, arg) => {
       setState({fullscreen:true})

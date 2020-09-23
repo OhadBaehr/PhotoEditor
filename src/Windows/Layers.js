@@ -6,7 +6,7 @@ import { BiNote } from 'react-icons/bi'
 import { ImBin2, ImEye } from 'react-icons/im'
 import { MdVisibility, MdVisibilityOff, MdLock } from 'react-icons/md'
 import { RiEye2Fill } from 'react-icons/ri'
-import globalStore, { addLayer } from '../Store/StoreFuncs'
+import globalStore, { addLayer,deleteLayer } from '../Store/StoreFuncs'
 import { DragDropContext, Droppable,Draggable } from 'react-beautiful-dnd'
 import {useAbuse} from 'use-abuse'
 import { v1 } from 'uuid';
@@ -16,6 +16,7 @@ const Layers = () => {
     const store = useSelector(store => store)
     const theme=store.settings.theme
     const layersMap = React.useMemo(() => {
+        if(!store.canvas.layers.length) return <></>
         return store.canvas.layers.map((_, index) => {
             let backwardsIndex=store.canvas.layers.length-1-index
             return <Draggable draggableId={`draggable-${index}`} index={index} key={`draggable-${index}`}> 
@@ -45,7 +46,7 @@ const Layers = () => {
             </li>)}
             </Draggable>
         })
-    }, [store.canvas.activeLayer, store.canvas.layersCount, store.canvas.layers[store.canvas.activeLayer].src, store.canvas.layers])
+    }, [store.canvas.activeLayer, store.canvas.layersCount, store.canvas.layers[store.canvas.activeLayer]?.src, store.canvas.layers])
 
     function onDragEnd(res) {
         if (!res.destination || res.destination.index === res.source.index) {
@@ -91,7 +92,7 @@ const Layers = () => {
                     <div className={`layers-control`}>
                         <AiFillFolderAdd className={`layers-icon`} />
                         <BiNote className={`layers-icon`} onClick={() => addLayer({ src: null, name: `layer ${store.canvas.layersCount}`, visible: true, locked:false ,id:v1()})} />
-                        <ImBin2 className={`layers-icon`} />
+                        <ImBin2 className={`layers-icon`} onClick={() => deleteLayer(store.canvas.activeLayer)}/>
                     </div>
                 </div>
             </div>
