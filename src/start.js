@@ -102,7 +102,7 @@ function createLayers() {
     transparent: true,
     frame: false,
     width: 160,
-    minWidth:120,
+    minWidth:160,
     height: 300,
     minHeight:200,
     type: 'toolbar',

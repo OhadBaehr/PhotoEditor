@@ -20,9 +20,13 @@ const Layers = () => {
             let backwardsIndex=store.canvas.layers.length-1-index
             return <Draggable draggableId={`draggable-${index}`} index={index} key={`draggable-${index}`}> 
             {(provided, snapshot) => (
-            <li className={`layer-item`} key={`layer-${store.canvas.layers[backwardsIndex].id}-key`} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}
-            isDragging={snapshot.isDragging && !snapshot.isDropAnimating}>
-                <RiEye2Fill className={`eye-icon`} />
+            <li className={`layer-item`} key={`layer-${store.canvas.layers[backwardsIndex].id}-key`} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                <div className={`eye-icon`} onClick={() => {
+                    store.canvas.layers[backwardsIndex].visible=!store.canvas.layers[backwardsIndex].visible
+                    globalStore.setStore({ layers: store.canvas.layers },'global')
+                    }}>
+                    {store.canvas.layers[backwardsIndex].visible && <RiEye2Fill/>}
+                </div>
                 <div className={`preview-name-lock-container ${backwardsIndex === store.canvas.activeLayer ? 'active-layer' : ''}`}>
                     <div className={`canvas-preview ${backwardsIndex === store.canvas.activeLayer ? 'active-preview' : ''}`} key={`preview-${store.canvas.layers[backwardsIndex].id}-key`}
                         onClick={() => globalStore.setStore({ activeLayer: backwardsIndex })}>
@@ -31,7 +35,12 @@ const Layers = () => {
                         </div>
                     </div>
                     <input type="text" defaultValue={store.canvas.layers[backwardsIndex].name} className={`layer-name`}></input>
-                    <MdLock className={`lock-icon`} />
+                    <div className={`lock-icon`} onClick={() => {
+                        store.canvas.layers[backwardsIndex].locked=!store.canvas.layers[backwardsIndex].locked
+                        globalStore.setStore({ layers: store.canvas.layers },'global')
+                        }}>
+                        {store.canvas.layers[backwardsIndex].locked && <MdLock />}
+                    </div>
                 </div>
             </li>)}
             </Draggable>
@@ -58,13 +67,16 @@ const Layers = () => {
     return (
         <>
         <div className={`layers-container ${theme}`}>
+            <div className={`layers-nav-dummy-scale`}>
             <nav className={`layers-nav `}>
                 <div className={`nav-container`}>
                     <VscChromeClose className={`mini-icon`} />
                 </div>
             </nav>
-
-            <div className={`layers-options-top`}></div>
+            </div>
+            <div className={"layers-options-top-dummy-scale"}>
+                <div className={`layers-options-top`}></div>
+            </div>
             <DragDropContext onDragEnd={onDragEnd}>
                 <Droppable droppableId={`droppable-area`}>
                     {(provided) => (
@@ -74,14 +86,16 @@ const Layers = () => {
                         </ul>)}
                 </Droppable>
             </DragDropContext>
-            <div className={`layers-options-bottom`}>
-                <div className={`layers-control`}>
-                    <AiFillFolderAdd className={`layers-icon`} />
-                    <BiNote className={`layers-icon`} onClick={() => addLayer({ src: null, name: `layer ${store.canvas.layersCount}`, visible: true ,id:v1()})} />
-                    <ImBin2 className={`layers-icon`} />
+            <div className={"layers-options-bottom-dummy-scale"}>
+                <div className={`layers-options-bottom`}>
+                    <div className={`layers-control`}>
+                        <AiFillFolderAdd className={`layers-icon`} />
+                        <BiNote className={`layers-icon`} onClick={() => addLayer({ src: null, name: `layer ${store.canvas.layersCount}`, visible: true, locked:false ,id:v1()})} />
+                        <ImBin2 className={`layers-icon`} />
+                    </div>
                 </div>
             </div>
-            <div className={`dummy-scale`}>
+            <div className={`layers-footer-dummy-scale`}>
                 <footer className={`layers-footer`}></footer>
             </div>
         </div>

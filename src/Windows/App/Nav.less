@@ -1,12 +1,13 @@
 @import  '../../constants.less';
+@import  '../../themes.less';
 .app-nav{
     .dark&{
-        border-top:2px solid @color-window-dark;
-        border-bottom:2px solid @color-window-dark;
+        border-top:2px solid @window-background-dark;
+        border-bottom:2px solid @window-background-dark;
     }
     .light&{
-        border-top:2px solid @color-window-light;
-        border-bottom:2px solid @color-window-light;
+        border-top:2px solid @window-background-light;
+        border-bottom:2px solid @window-background-light;
     }
     .nav-container {
         -webkit-user-select: none;
@@ -17,10 +18,10 @@
         width              : 100%;
         height             : @navHeight;
         .dark&{
-            background         : @color-window-dark;
+            background         : @window-background-dark;
         }
         .light&{
-            background         : @color-window-light;
+            background         : @window-background-light;
         }
         .nav-logo {
             height:@navHeight;
@@ -44,12 +45,12 @@
                 -webkit-app-region: no-drag;
                 padding           : 6px 10px 6px 10px;
                 .dark&{
-                    color             : rgb(222, 222, 223);
-                    background         : @color-window-dark;//covers the text hidden by overflow dots
+                    color             : @font-color-dark;
+                    background         : @window-background-dark;//covers the text hidden by overflow dots
                 }
                 .light&{
                     color             : rgb(45, 45, 47);
-                    background         : @color-window-light;//covers the text hidden by overflow dots
+                    background         : @window-background-light;//covers the text hidden by overflow dots
                 }
                 &:hover {
                     .dark&{
@@ -75,14 +76,13 @@
                 
             }
             .overflow-indicator{
-                background         : @color-window-dark;
                 position: absolute;
                 margin-left:8px;
                 .dark&{
-                    color:white;
+                    background         : @window-background-dark;
                 }
                 .light&{
-                    color:white;
+                    background         : @window-background-light;
                 }
                 .three-dots{
                     padding-top:7px;

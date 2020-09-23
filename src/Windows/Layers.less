@@ -1,34 +1,45 @@
 .layers-container {
     // background: blue;
     height: 100vh;
-
-    .layers-nav {
+    display:flex;
+    flex-direction: column;
+    .layers-nav-dummy-scale{
         border-radius     : 7px 7px 0 0;
-        width             : 100%;
-        height            : 14px;
-        -webkit-app-region: drag;
-
         .dark& {
-            background: rgb(71, 71, 69);
-            border-top: 2px solid rgb(71, 71, 69);
+            border-top:2px solid rgb(71, 71, 69);
+            border-left: 2px solid rgb(71, 71, 69);
+            border-right:2px solid rgb(71, 71, 69);
+        }
+        .layers-nav {
+            width             : 100%;
+            height            : 14px;
+            -webkit-app-region: drag;
+
+            .dark& {
+                background: rgb(71, 71, 69);
+            }
         }
     }
-
-    .layers-options-top {
-        -webkit-app-region: drag;
-        height            : 25px;
-
-        .dark& {
-            background: rgb(83, 85, 83);
+    .layers-options-top-dummy-scale{
+        border-right: 2px solid rgb(83, 85, 83);
+        border-left: 2px solid rgb(83, 85, 83);
+        flex: 0 0 25px;
+        .layers-options-top {
+            -webkit-app-region: drag;
+            height:25px;
+            .dark& {
+                background: rgb(83, 85, 83);
+            }
         }
-    }
+    }   
+  
 
     .layers-list {
-        height    : calc(100% - 76px);
+        flex: 1 1 auto;
         overflow-x: hidden;
         overflow-y: scroll;
         text-align: justify;
-
+        
         .dark& {
             border-left     : 4px solid rgb(83, 85, 83);
             border-right    : 4px solid rgb(83, 85, 83);
@@ -42,18 +53,20 @@
             display       : flex;
             flex-direction: row;
             align-items   : center;
-
+            justify-items: center;
             .dark& {
                 border-bottom: 1px solid rgb(83, 77, 77);
             }
-
             .eye-icon {
                 cursor            : pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 -webkit-app-region: no-drag;
-                font-size         : 13px;
-                min-width         : 14px;
+                font-size         : 14px;
+                min-width         : 16px;
                 min-height        : 17px;
-                margin            : 0 2px 0 1px;
+                margin            : 2px 2px 1px 2px;
                 padding           : 1px 2px;
                 border            : 1px solid transparent;
 
@@ -131,13 +144,16 @@
 
                 .lock-icon {
                     cursor            : pointer;
-                    -webkit-app-region: no-drag;
-                    font-size         : 17px;
-                    min-width         : 16px;
-                    min-height        : 17px;
-                    margin            : 2px 2px 1px 2px;
-                    padding           : 1px 2px;
-                    border            : 1px solid transparent;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                -webkit-app-region: no-drag;
+                font-size         : 18px;
+                min-width         : 16px;
+                min-height        : 17px;
+                margin            : 2px 2px 1px 2px;
+                padding           : 1px 2px;
+                border            : 1px solid transparent;
                     .dark&{
                         color             : rgb(216, 210, 210);
                     }
@@ -192,22 +208,26 @@
         }
 
     }
-
-    .layers-options-bottom {
-        -webkit-app-region: drag;
-        display           : flex;
-        height            : 25px;
-        border-radius     : inherit;
-
-        .dark& {
-            background: rgb(83, 85, 83);
-        }
-
-        .layers-control {
-            margin-left : auto;
-            margin-right: 8px;
+    .layers-options-bottom-dummy-scale{
+        border-right: 2px solid rgb(83, 85, 83);
+        border-left: 2px solid rgb(83, 85, 83);
+        .layers-options-bottom {
+            transform:translateY(-1px);
+            -webkit-app-region: drag;
+            display           : flex;
+            height            : 25px;
+            border-radius     : inherit;
+            .dark& {
+                background: rgb(83, 85, 83);
+            }
+    
+            .layers-control {
+                margin-left : auto;
+                margin-right: 8px;
+            }
         }
     }
+   
 
     .layers-icon {
         -webkit-app-region: no-drag;
@@ -226,7 +246,8 @@
         }
     }
 
-    .dummy-scale {
+    .layers-footer-dummy-scale {
+        margin-top:-1px;
         //border-top:none;
         border-radius: 0 0 7px 7px;
 
@@ -236,8 +257,8 @@
 
         .layers-footer {
             width : 100%;
-            height: 6px;
-
+            height: 8px;
+            
             .dark& {
                 background: rgb(71, 71, 69);
             }

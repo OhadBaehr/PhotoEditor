@@ -8,6 +8,7 @@ const initialState = {
         src: blankImage(),
         name: "layer 0",
         visible: true,
+        locked:true,
         id:v1()
     }],
     activeLayer: 0,

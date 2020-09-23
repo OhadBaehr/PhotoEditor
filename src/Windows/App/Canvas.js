@@ -135,7 +135,6 @@ const Canvas = () => {
 
   useEffect(() => {
     itemsRef.current = itemsRef.current.slice(0, store.layers.length);
-    canvas = itemsRef.current[store.activeLayer]
     //Here we set up the properties of the canvas element. 
     itemsRef.current.map((el, i) => {
       let ctx = el.getContext('2d')
@@ -146,23 +145,27 @@ const Canvas = () => {
         ctx.drawImage(img, 0, 0, el.width, el.height);
       }
     })
-    tool = pencil(canvas, state.strokeColor)
-
+    if(store.layers[store.activeLayer].visible){
+      canvas = itemsRef.current[store.activeLayer]
+      tool = pencil(canvas, state.strokeColor)
+      canvasContainer.current.addEventListener("pointermove", tool.onPointerMove)
+      canvasContainer.current.addEventListener("pointerdown", tool.onPointerDown)
+      window.addEventListener('pointerup', tool.onPointerUp);
+    }
     window.addEventListener('keydown', handleCommands);
-    window.addEventListener('pointerup', tool.onPointerUp);
-    canvasContainer.current.addEventListener("pointermove", tool.onPointerMove)
-    canvasContainer.current.addEventListener("pointerdown", tool.onPointerDown)
     return () => {
       window.removeEventListener('keydown', handleCommands);
-      window.removeEventListener('pointerup', tool.onPointerUp);
-      canvasContainer.current.removeEventListener("pointermove", tool.onPointerMove)
-      canvasContainer.current.removeEventListener("pointerdown", tool.onPointerDown)
+      if(store.layers[store.activeLayer].visible){
+        window.removeEventListener('pointerup', tool.onPointerUp);
+        canvasContainer.current.removeEventListener("pointermove", tool.onPointerMove)
+        canvasContainer.current.removeEventListener("pointerdown", tool.onPointerDown)
+      }
     }
   }, [store.activeLayer,store.layersCount,store.dpi,store.layers])
 
   const canvasMap = React.useMemo(() => {
     return store.layers.map((_, index) => {
-      let el = <canvas className={`canvas`} key={`canvas-${store.layers[index].id}`} ref={el => itemsRef.current[index] = el} 
+      let el = <canvas className={`canvas ${store.layers[index].visible?'':'hidden'}`} key={`canvas-${store.layers[index].id}`} ref={el => itemsRef.current[index] = el} 
         width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi} style={{ width: state.canvasWidth, height: state.canvasHeight }}/>
       return el
     })

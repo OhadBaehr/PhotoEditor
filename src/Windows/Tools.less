@@ -1,5 +1,5 @@
 @import '../constants.less';
-
+@import  '../themes.less';
 .tools-container {
     .tools-nav {
         border-radius     : 7px 7px 0 0;
@@ -8,6 +8,9 @@
         -webkit-app-region: drag;
         .dark&{
             background        : rgb(71, 71, 69);
+        }
+        .light&{
+            background        : rgb(158, 162, 163);
         }
         .nav-container {
             -webkit-user-select: none;
@@ -23,7 +26,10 @@
         border-radius     : 0 0 7px 7px;
         height            : calc(100vh - 17px);
         .dark&{
-            background        : rgb(83, 85, 83);
+            background        : @window-background-dark;
+        }
+        .light&{
+            background        :@window-background-light;
         }
         .icons-container {
             padding-top    : 6px;
@@ -37,11 +43,18 @@
                 margin            : 1px;
                 padding           : 5px;
                 .dark&{
-                    color             : rgb(216, 210, 210);
+                    color             : @font-color-dark;
+                }
+                .light&{
+                    color             : rgb(61, 60, 60);
                 }
                 &:hover {
                     .dark&{
                         background: rgb(75, 71, 71);
+                        outline   : 1px solid rgba(116, 115, 112, 0.5);
+                    }
+                    .light&{
+                        background: rgb(221, 217, 217);
                         outline   : 1px solid rgba(116, 115, 112, 0.5);
                     }
                 }
@@ -61,6 +74,9 @@
                 .dark&{
                     color      : white;
                 }
+                .light&{
+                    color      : rgb(36, 34, 34);
+                }
             }
 
             .primary-color {
@@ -74,6 +90,10 @@
                     border     : 1px solid rgb(209, 206, 206);
                     outline    : 1px solid rgba(0, 0, 0, 0.205);
                 }
+                .light&{
+                    border     : 1px solid rgb(209, 206, 206);
+                    outline    : 1px solid rgba(0, 0, 0, 0.205);
+                }
             }
 
             .secondary-color {
@@ -82,6 +102,10 @@
                 margin-left: 13px;
                 background : white; //TODO
                 .dark&{
+                    border     : 1px solid rgb(209, 206, 206);
+                    outline    : 1px solid rgba(0, 0, 0, 0.205);
+                }
+                .light&{
                     border     : 1px solid rgb(209, 206, 206);
                     outline    : 1px solid rgba(0, 0, 0, 0.205);
                 }

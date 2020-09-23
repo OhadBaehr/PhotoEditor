@@ -1,4 +1,5 @@
 @import '../constants.less';
+@import '../themes.less';
 .dark-theme {
   @navHeight:2px;
 }
@@ -6,25 +7,25 @@
     .dark&{
       box-shadow: -1px 2px 0px 18px rgba(0,0,0,0.8);
       background:rgb(31, 31, 30);
-      border-right:6px solid  rgb(83, 85, 83);
-      border-left:6px solid  rgb(83, 85, 83);
-      border-bottom:7px solid  rgb(83, 85, 83);
+      border-right:6px solid   @window-background-dark;
+      border-left:6px solid   @window-background-dark;
+      border-bottom:7px solid   @window-background-dark;
     }
     .light&{
         box-shadow: -1px 2px 0px 18px rgba(202, 197, 197, 0.8);
         background:rgb(207, 207, 202);
-        border-right:6px solid  rgb(116, 122, 116);
-        border-left:6px solid  rgb(116, 122, 116);
-        border-bottom:7px solid rgb(116, 122, 116);
+        border-right:6px solid   @window-background-light;
+        border-left:6px solid  @window-background-light;
+        border-bottom:7px solid @window-background-light;
     }
     .inner-app-container{
-        height         : calc(100vh - @navHeight - 11px);
+        height         : calc(100vh - @navHeight - @app-scroll-height + 2px);
         overflow: -moz-scrollbars-vertical; 
         overflow-y: scroll;
         overflow-x: scroll;
         &::-webkit-scrollbar {
-            width: 13px;
-            height:13px;
+            width: @app-scroll-width;
+            height:@app-scroll-height;
           }
       
           &::-webkit-scrollbar-track {
@@ -72,7 +73,7 @@
           &::-webkit-scrollbar-track-piece:vertical {
               border-radius:0 8px 0 0;
               .dark&{
-                background:rgb(63, 61, 61);
+                background:@app-scrollbar-track-dark
               }
               .light&{
                 background:rgb(63, 61, 61);
@@ -80,7 +81,7 @@
           }
           &::-webkit-scrollbar-track-piece:horizontal {
             .dark&{
-              background:rgb(63, 61, 61);
+              background:@app-scrollbar-track-dark
             }
             .light&{
               background:rgb(63, 61, 61);
@@ -88,7 +89,7 @@
           }
           &::-webkit-scrollbar-corner{
             .dark&{
-              background:rgb(71, 68, 68);
+              background:rgb(71, 71, 69);
             }
             .light&{
               background:rgb(71, 68, 68);
