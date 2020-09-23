@@ -11,10 +11,10 @@ globalStore.setStore = (payload,mode=null) => {
     if (typeof payload === "function") {
         const prev = globalStore.getState()
         const res=payload({...prev.canvas,...prev.settings})
-        if(mode!=='global')globalStore.dispatch({ type: 'PLACEHOLDER', payload:res, meta:{scope: 'local'} })
+        if(mode==='local' || mode==='mixed')globalStore.dispatch({ type: 'PLACEHOLDER', payload:res, meta:{scope: 'local'} })
         if(mode!=='local')globalStore.dispatch({ type: 'PLACEHOLDER', payload:res})
     }else{
-        if(mode!=='global')globalStore.dispatch({ type: 'PLACEHOLDER', payload, meta:{scope: 'local'} })
+        if(mode==='local' || mode==='mixed')globalStore.dispatch({ type: 'PLACEHOLDER', payload, meta:{scope: 'local'} })
         if(mode!=='local')globalStore.dispatch({ type: 'PLACEHOLDER', payload})
     }
 }

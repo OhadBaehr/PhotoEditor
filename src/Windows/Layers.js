@@ -24,7 +24,7 @@ const Layers = () => {
             <li className={`layer-item`} key={`layer-${store.canvas.layers[backwardsIndex].id}-key`} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
                 <div className={`eye-icon`} onClick={() => {
                     store.canvas.layers[backwardsIndex].visible=!store.canvas.layers[backwardsIndex].visible
-                    globalStore.setStore({ layers: store.canvas.layers },'global')
+                    globalStore.setStore({ layers: store.canvas.layers })
                     }}>
                     {store.canvas.layers[backwardsIndex].visible && <RiEye2Fill/>}
                 </div>
@@ -38,7 +38,7 @@ const Layers = () => {
                     <input type="text" defaultValue={store.canvas.layers[backwardsIndex].name} className={`layer-name`}></input>
                     <div className={`lock-icon`} onClick={() => {
                         store.canvas.layers[backwardsIndex].locked=!store.canvas.layers[backwardsIndex].locked
-                        globalStore.setStore({ layers: store.canvas.layers },'global')
+                        globalStore.setStore({ layers: store.canvas.layers })
                         }}>
                         {store.canvas.layers[backwardsIndex].locked && <MdLock />}
                     </div>
@@ -62,7 +62,7 @@ const Layers = () => {
         else if(origin> activeLayer && dest<activeLayer  || (dest==activeLayer && origin>activeLayer))  activeLayer+=1
         else if(dest>activeLayer && origin< activeLayer || (dest==activeLayer && origin<activeLayer))  activeLayer-=1
         
-        globalStore.setStore({layers:list,activeLayer: activeLayer})
+        globalStore.setStore({layers:list,activeLayer: activeLayer},'mixed')
     }
 
     return (
