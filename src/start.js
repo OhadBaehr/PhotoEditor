@@ -39,39 +39,39 @@ function createWindow() {
   webContents.on('did-finish-load', () => {
     webContents.setZoomFactor(1)
     // mainWindow.webContents.send('debug', 'bloop');
-    subWindowsOverlay()
+    // subWindowsOverlay()
   })
   mainWindow.on('closed', () => {
-    subWindowsHide()
+    subWindowsClose()
     mainWindow = null
   })
 
-  mainWindow.on('minimize', () => {
-    subWindowsHide()
-  })
+  // mainWindow.on('minimize', () => {
+  //   subWindowsHide()
+  // })
 
-  mainWindow.on('restore', () => {
-    subWindowsOverlay()
-  })
+  // mainWindow.on('restore', () => {
+  //   subWindowsOverlay()
+  // })
 
-  mainWindow.on('focus', () => {
-    subWindowsOverlay()
-  })
+  // mainWindow.on('focus', () => {
+  //   subWindowsOverlay()
+  // })
   mainWindow.on('maximize', () => {
-    subWindowsOverlay()
+    // subWindowsOverlay()
     mainWindow.webContents.send('fullscreen-true', '');
 
   })
   mainWindow.on('unmaximize', () => {
-    subWindowsOverlay()
+    // subWindowsOverlay()
     mainWindow.webContents.send('fullscreen-false', '');
   })
-  mainWindow.on('enter-full-screen', () => {
-    subWindowsOverlay()
-  })
-  mainWindow.on('move', () => {
-    subWindowsOverlay()
-  })
+  // mainWindow.on('enter-full-screen', () => {
+  //   subWindowsOverlay()
+  // })
+  // mainWindow.on('move', () => {
+  //   subWindowsOverlay()
+  // })
 }
 
 
@@ -82,6 +82,10 @@ app.on('window-all-closed', () => {
     }
 })
 
+function subWindowsClose(){
+  layersWindow.close()
+  toolsWindow.close()
+}
 
 function subWindowsHide(){
   layersWindow.hide()
@@ -106,6 +110,7 @@ function createLayers() {
     height: 300,
     minHeight:200,
     type: 'toolbar',
+    parent:mainWindow,
     setSkipTaskbar:true,
     webPreferences: {
       worldSafeExecuteJavaScript: true,
@@ -139,6 +144,7 @@ function createTools() {
     transparent: true,
     frame: false,
     resizable:false,
+    parent:mainWindow,
     webPreferences: {
       worldSafeExecuteJavaScript: true,
       enableRemoteModule: true,
