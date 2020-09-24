@@ -52,25 +52,8 @@ const pencil = (canvas, strokeColor) => {
   ctx.strokeStyle = "rgba(0,0,0,0.75)"
   let isDrawing, points = [];
   let img = new Image();
-  return {
-    onPointerDown: function (e) {
-      if (e.width === 1) {
-        isDrawing = true;
-        img.src = history.saveState(ctx.canvas);
-      }
-    },
-    onPointerUp: function (e) {
-      if (e.width === 1) {
-        isDrawing = false;
-        points.length = 0;
-        ctx.globalCompositeOperation = 'source-over'
-        saveActiveLayerImage(canvas.toDataURL())
-      }
-    },
-    onPointerMove: function (e) {
-      if (e.width === 1) {
-        if (!isDrawing) return;
-        var rect = canvas.getBoundingClientRect();
+  function draw(e){
+    var rect = canvas.getBoundingClientRect();
         let mouseX = e.clientX - rect.left
         let mouseY = e.clientY - rect.top
         let prevCtxOperation = ctx.globalCompositeOperation
@@ -104,12 +87,33 @@ const pencil = (canvas, strokeColor) => {
           prevCtxOperation === 'source-over' ? ctx.globalCompositeOperation = 'destination-out' : ctx.globalCompositeOperation = 'source-over'
         } else {
           ctx.moveTo(points[0].x, points[0].y);
-          for (var i = 1; i < points.length; i++) {
+          for (var i = 0; i < points.length; i++) {
             ctx.lineTo(points[i].x, points[i].y);
           }
           ctx.setTransform(1, 0, 0, 1, 0, 0);
           ctx.stroke();
         }
+  }
+  return {
+    onPointerDown: function (e) {
+      if (e.width === 1) {
+        isDrawing = true;
+        img.src = history.saveState(ctx.canvas);
+        draw(e)
+      }
+    },
+    onPointerUp: function (e) {
+      if (e.width === 1) {
+        isDrawing = false;
+        points.length = 0;
+        ctx.globalCompositeOperation = 'source-over'
+        saveActiveLayerImage(canvas.toDataURL())
+      }
+    },
+    onPointerMove: function (e) {
+      if (e.width === 1) {
+        if (!isDrawing) return;
+        draw(e)
       }
     },
   }
@@ -167,15 +171,15 @@ const Canvas = () => {
 
   const canvasMap = React.useMemo(() => {
     return store.layers.map((_, index) => {
-      let el = <canvas className={`canvas ${store.layers[index].visible?'':'hidden'}`} key={`canvas-${store.layers[index].id}`} ref={el => itemsRef.current[index] = el} 
-        width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi} style={{ width: state.canvasWidth, height: state.canvasHeight }}/>
-      return el
+      return <canvas className={`canvas ${store.layers[index].visible?'':'hidden'}`} key={`canvas-${store.layers[index].id}-key`} ref={el => itemsRef.current[index] = el} 
+       style={{ width: state.canvasWidth, height: state.canvasHeight }}  width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi}/>
     })
   }, [store.activeLayer,store.layersCount,store.dpi,store.layers])
   return (
       <div className={`canvas-container`} style={{ minHeight: state.canvasHeight + 100 }} ref={canvasContainer}>
         <div className={`transparent-background`} style={{ width: state.canvasWidth, height: state.canvasHeight }}>
-          {canvasMap}
+          <img className={`canvas ${store.layers[store.activeLayer].visible?'':'hidden'}`} style={{ width: state.canvasWidth, height: state.canvasHeight }} src={store.layers[store.activeLayer].src}/>
+          {canvasMap} 
         </div>
       </div>
   );

@@ -19,6 +19,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     transparent: false,
     frame: false,
+    // setSkipTaskbar:false,//just for reference: this control if the icon is shown
     width: 800,
     minWidth:340,
     height: 600,
@@ -111,7 +112,6 @@ function createLayers() {
     minHeight:200,
     type: 'toolbar',
     parent:mainWindow,
-    setSkipTaskbar:true,
     webPreferences: {
       worldSafeExecuteJavaScript: true,
       enableRemoteModule: true,
@@ -140,7 +140,6 @@ function createTools() {
     height: 264,
     minHeight:60,
     type: 'toolbar',
-    setSkipTaskbar:true,
     transparent: true,
     frame: false,
     resizable:false,

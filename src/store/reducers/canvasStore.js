@@ -9,7 +9,9 @@ const initialState = {
         name: "layer 0",
         visible: true,
         locked:true,
-        id:v1()
+        id:v1(),
+        undoList: [],
+        redoList: []
     }],
     activeLayer: 0,
     dpi:1,

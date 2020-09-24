@@ -91,7 +91,8 @@ const Layers = () => {
                 <div className={`layers-options-bottom`}>
                     <div className={`layers-control`}>
                         <AiFillFolderAdd className={`layers-icon`} />
-                        <BiNote className={`layers-icon`} onClick={() => addLayer({ src: null, name: `layer ${store.canvas.layersCount}`, visible: true, locked:false ,id:v1()})} />
+                        <BiNote className={`layers-icon`} 
+                            onClick={() => addLayer({ src: null, name: `layer ${store.canvas.layersCount}`, visible: true, locked:false ,id:v1(),undoList: [],redoList: []})} />
                         <ImBin2 className={`layers-icon`} onClick={() => deleteLayer(store.canvas.activeLayer)}/>
                     </div>
                 </div>
