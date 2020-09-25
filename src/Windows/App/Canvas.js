@@ -53,7 +53,7 @@ const pencil = (canvas, strokeColor) => {
   let isDrawing, points = [];
   let img = new Image();
   function draw(e){
-    var rect = canvas.getBoundingClientRect();
+        let rect = canvas.getBoundingClientRect();
         let mouseX = e.clientX - rect.left
         let mouseY = e.clientY - rect.top
         let prevCtxOperation = ctx.globalCompositeOperation
@@ -97,13 +97,19 @@ const pencil = (canvas, strokeColor) => {
   return {
     onPointerDown: function (e) {
       if (e.width === 1) {
-        isDrawing = true;
-        img.src = history.saveState(ctx.canvas);
-        draw(e)
+        let rect = canvas.getBoundingClientRect();
+        let mouseX = e.clientX - rect.left
+        let mouseY = e.clientY - rect.top
+        console.log("mouseX",mouseX,"mouseY",mouseY,"rect",rect)
+        if(mouseX>=0 && mouseX<=rect.width && mouseY>=0 && mouseY<=rect.height){
+          isDrawing = true;
+          img.src = history.saveState(ctx.canvas);
+          draw(e)
+        }
       }
     },
     onPointerUp: function (e) {
-      if (e.width === 1) {
+      if (e.width === 1 && isDrawing) {
         isDrawing = false;
         points.length = 0;
         ctx.globalCompositeOperation = 'source-over'
@@ -147,9 +153,10 @@ const Canvas = () => {
         img.src = store.layers[i].src
         img.onload = function () {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-          ctx.drawImage(img, 0, 0, el.width, el.height);
+          ctx.drawImage(img, 0, 0, el.width, el.height);         
         }
       })
+
       if(store.layers[store.activeLayer].visible){
         canvas = itemsRef.current[store.activeLayer]
         tool = pencil(canvas, state.strokeColor)
@@ -172,13 +179,13 @@ const Canvas = () => {
   const canvasMap = React.useMemo(() => {
     return store.layers.map((_, index) => {
       return <canvas className={`canvas ${store.layers[index].visible?'':'hidden'}`} key={`canvas-${store.layers[index].id}-key`} ref={el => itemsRef.current[index] = el} 
-       style={{ width: state.canvasWidth, height: state.canvasHeight }}  width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi}/>
+       style={{ width: state.canvasWidth, height: state.canvasHeight }} width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi}/>
     })
   }, [store.activeLayer,store.layersCount,store.dpi,store.layers])
+  
   return (
       <div className={`canvas-container`} style={{ minHeight: state.canvasHeight + 100 }} ref={canvasContainer}>
         <div className={`transparent-background`} style={{ width: state.canvasWidth, height: state.canvasHeight }}>
-          <img className={`canvas ${store.layers[store.activeLayer].visible?'':'hidden'}`} style={{ width: state.canvasWidth, height: state.canvasHeight }} src={store.layers[store.activeLayer].src}/>
           {canvasMap} 
         </div>
       </div>
