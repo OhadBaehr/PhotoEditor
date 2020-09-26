@@ -34,8 +34,8 @@ function saveActiveLayerImage(newImage) {
 
 function addLayer(layer) {
     let store = globalStore.getState().canvas
-    store.layers.push(layer)
-    // store.activeLayer = store.layersCount
+    store.layers.splice(store.activeLayer+1, 0, layer);
+    store.activeLayer = store.activeLayer+1
     store.layersCount += 1
     globalStore.setStore(store)
 }
@@ -43,7 +43,6 @@ function addLayer(layer) {
 function deleteLayer(activeLayer) {
     let store = globalStore.getState().canvas
     if(store.layers.length){
-        store.layersCount -= 1
         store.layers.splice(activeLayer,1)
         if(store.activeLayer>0) store.activeLayer-=1
         else store.activeLayer=0
