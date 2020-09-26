@@ -9,7 +9,6 @@ var history = {
   redo_list: [],
   undo_list: [],
   saveState: function (ctx, list) {
-    console.log(this.undo_list,this.redo_list)
     let data
     (list || this.undo_list).push({src:data= ctx.canvas.toDataURL(), id:ctx.canvas.id});
     return data
@@ -22,15 +21,16 @@ var history = {
   },
   restoreState: function (ctx, pop, push) {
     if (pop.length) {
-      let index=pop.length-1-pop.slice(0).reverse().findIndex(x => x.id === ctx.canvas.id);
+      let index=pop.slice(0).reverse().findIndex(x => x.id === ctx.canvas.id);
       if(index!==-1){
+        let backwardsIndex=pop.length-1-index
         this.saveState(ctx, push, true);
-        var restore_state = pop.splice(index,1)[0].src;
+        var restore_state = pop.splice(backwardsIndex,1)[0].src;
         var img = new Image();
         img.src = restore_state
         img.onload = function () {
-          ctx.globalCompositeOperation = 'source-over';
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          ctx.globalCompositeOperation = 'source-over';
           ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
         }
         saveActiveLayerImage(restore_state)
@@ -47,46 +47,46 @@ const pencil = (ctx, strokeColor) => {
   let isDrawing, points = [];
   let img = new Image();
   function draw(e){
-        let rect = ctx.canvas.getBoundingClientRect();
-        let mouseX = e.clientX - rect.left
-        let mouseY = e.clientY - rect.top
-        let prevCtxOperation = ctx.globalCompositeOperation
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
-        points.push({ x: mouseX, y: mouseY });
-        switch (e.buttons) {
-          case 1: ctx.globalCompositeOperation = 'source-over';
-            break;
-          case 2:
-          case 3:
-            ctx.globalCompositeOperation = 'destination-out';
-            break;
-          default:
-            break;
-        }
-        ctx.scale(dpi,dpi)
-        ctx.beginPath();
-        if (prevCtxOperation !== ctx.globalCompositeOperation) {
-          //fixing issues when switching from one ctx composition to another
-          ctx.globalCompositeOperation = prevCtxOperation
-          ctx.moveTo(points[0].x, points[0].y);
-          for (var i = 1; i < points.length; i++) {
-            ctx.lineTo(points[i].x, points[i].y);
-          }
-          ctx.setTransform(1, 0, 0, 1, 0, 0);
-          ctx.stroke();
-          img.src = history.saveState(ctx);
-          points.length = 0;
-          prevCtxOperation === 'source-over' ? ctx.globalCompositeOperation = 'destination-out' : ctx.globalCompositeOperation = 'source-over'
-        } else {
-          ctx.moveTo(points[0].x, points[0].y);
-          for (var i = 0; i < points.length; i++) {
-            ctx.lineTo(points[i].x, points[i].y);
-          }
-          ctx.setTransform(1, 0, 0, 1, 0, 0);
-          ctx.stroke();
-        }
+    let rect = ctx.canvas.getBoundingClientRect();
+    let mouseX = e.clientX - rect.left
+    let mouseY = e.clientY - rect.top
+    let prevCtxOperation = ctx.globalCompositeOperation
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
+    points.push({ x: mouseX, y: mouseY });
+    switch (e.buttons) {
+      case 1: ctx.globalCompositeOperation = 'source-over';
+        break;
+      case 2:
+      case 3:
+        ctx.globalCompositeOperation = 'destination-out';
+        break;
+      default:
+        break;
+    }
+    ctx.scale(dpi,dpi)
+    ctx.beginPath();
+    if (prevCtxOperation !== ctx.globalCompositeOperation) {
+      //fixing issues when switching from one ctx composition to another
+      ctx.globalCompositeOperation = prevCtxOperation
+      ctx.moveTo(points[0].x, points[0].y);
+      for (var i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.stroke();
+      img.src = history.saveState(ctx);
+      points.length = 0;
+      prevCtxOperation === 'source-over' ? ctx.globalCompositeOperation = 'destination-out' : ctx.globalCompositeOperation = 'source-over'
+    } else {
+      ctx.moveTo(points[0].x, points[0].y);
+      for (var i = 0; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.stroke();
+    }
   }
   return {
     onPointerDown: function (e) {
@@ -106,7 +106,9 @@ const pencil = (ctx, strokeColor) => {
         isDrawing = false;
         points.length = 0;
         ctx.globalCompositeOperation = 'source-over'
-        saveActiveLayerImage(ctx.canvas.toDataURL())
+        let data=ctx.canvas.toDataURL()
+        img.src=data
+        saveActiveLayerImage(data)
       }
     },
     onPointerMove: function (e) {
@@ -127,11 +129,13 @@ const Canvas = () => {
   const itemsRef = useRef([]);
   let canvasContainer = useRef(null)
   let tool = null
+  
   const handleCommands = (e) => {
+    console.log("changed")
     if (e.ctrlKey && e.key === 'z') {
       history.undo(canvas.getContext('2d'));
     }
-    if (e.ctrlKey && e.key === 'y') {
+    else if (e.ctrlKey && e.key === 'y') {
       history.redo(canvas.getContext('2d'))
     }
   }
@@ -146,7 +150,7 @@ const Canvas = () => {
         img.src = store.layers[i].src
         img.onload = function () {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-          ctx.drawImage(img, 0, 0, el.width, el.height);    
+          ctx.drawImage(img, 0, 0, el.width, el.height); 
         }
       })
 
@@ -167,14 +171,14 @@ const Canvas = () => {
         }
       }
     }
-  }, [store.activeLayer,store.layersCount,store.dpi,store.layers])
+  }, [store.activeLayer,store.layersCount,store.dpi])
 
   const canvasMap = React.useMemo(() => {
     return store.layers.map((_, index) => {
       return <canvas id={store.layers[index].id} className={`canvas ${store.layers[index].visible?'':'hidden'}`} key={`canvas-${store.layers[index].id}-key`} ref={el => itemsRef.current[index] = el} 
        style={{ width: state.canvasWidth, height: state.canvasHeight }} width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi}/>
     })
-  }, [store.activeLayer,store.layersCount,store.dpi,store.layers])
+  }, [store.activeLayer,store.layersCount,store.dpi])
   
   return (
       <div className={`canvas-container`} style={{ minHeight: state.canvasHeight + 100 }} ref={canvasContainer}>
