@@ -12,40 +12,35 @@ var history = {
     this.redo_list = redo
     this.undo_list = undo
   },
-  saveState: function (canvas, list, keep_redo) {
-    keep_redo = keep_redo || false;
-    if (!keep_redo) {
-      this.redo_list = [];
-    }
+  saveState: function (ctx, list, keep_redo) {
     let data
-    (list || this.undo_list).push(data = canvas.toDataURL());
+    (list || this.undo_list).push(data= ctx.canvas.toDataURL() );
     return data
   },
-  undo: function (canvas, ctx) {
-    this.restoreState(canvas, ctx, this.undo_list, this.redo_list);
+  undo: function (ctx) {
+    this.restoreState(ctx, this.undo_list, this.redo_list);
   },
-  redo: function (canvas, ctx) {
-    this.restoreState(canvas, ctx, this.redo_list, this.undo_list);
+  redo: function (ctx) {
+    this.restoreState(ctx, this.redo_list, this.undo_list);
   },
-  restoreState: function (canvas, ctx, pop, push) {
+  restoreState: function (ctx, pop, push) {
     if (pop.length) {
-      this.saveState(canvas, push, true);
+      this.saveState(ctx, push, true);
       var restore_state = pop.pop();
       var img = new Image();
       img.src = restore_state
       img.onload = function () {
-        canvas.style.userEvents = "none"
+        ctx.canvas.style.userEvents = "none"
         ctx.globalCompositeOperation = 'source-over';
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
       }
       saveActiveLayerImage(restore_state)
     }
   }
 }
 
-const pencil = (canvas, strokeColor) => {
-  let ctx = canvas.getContext("2d")
+const pencil = (ctx, strokeColor) => {
   let dpi=globalStore.getState().canvas.dpi
   ctx.lineWidth = 20;
   ctx.lineJoin = ctx.lineCap = 'round';
@@ -53,13 +48,13 @@ const pencil = (canvas, strokeColor) => {
   let isDrawing, points = [];
   let img = new Image();
   function draw(e){
-        let rect = canvas.getBoundingClientRect();
+        let rect = ctx.canvas.getBoundingClientRect();
         let mouseX = e.clientX - rect.left
         let mouseY = e.clientY - rect.top
         let prevCtxOperation = ctx.globalCompositeOperation
         ctx.globalCompositeOperation = 'source-over';
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
         points.push({ x: mouseX, y: mouseY });
         switch (e.buttons) {
           case 1: ctx.globalCompositeOperation = 'source-over';
@@ -82,7 +77,7 @@ const pencil = (canvas, strokeColor) => {
           }
           ctx.setTransform(1, 0, 0, 1, 0, 0);
           ctx.stroke();
-          img.src = history.saveState(ctx.canvas);
+          img.src = history.saveState(ctx);
           points.length = 0;
           prevCtxOperation === 'source-over' ? ctx.globalCompositeOperation = 'destination-out' : ctx.globalCompositeOperation = 'source-over'
         } else {
@@ -97,13 +92,13 @@ const pencil = (canvas, strokeColor) => {
   return {
     onPointerDown: function (e) {
       if (e.width === 1) {
-        let rect = canvas.getBoundingClientRect();
+        let rect = ctx.canvas.getBoundingClientRect();
         let mouseX = e.clientX - rect.left
         let mouseY = e.clientY - rect.top
-        console.log("mouseX",mouseX,"mouseY",mouseY,"rect",rect)
         if(mouseX>=0 && mouseX<=rect.width && mouseY>=0 && mouseY<=rect.height){
+          console.log(ctx)
           isDrawing = true;
-          img.src = history.saveState(ctx.canvas);
+          img.src = history.saveState(ctx);
           draw(e)
         }
       }
@@ -113,7 +108,7 @@ const pencil = (canvas, strokeColor) => {
         isDrawing = false;
         points.length = 0;
         ctx.globalCompositeOperation = 'source-over'
-        saveActiveLayerImage(canvas.toDataURL())
+        saveActiveLayerImage(ctx.canvas.toDataURL())
       }
     },
     onPointerMove: function (e) {
@@ -136,10 +131,10 @@ const Canvas = () => {
   let tool = null
   const handleCommands = (e) => {
     if (e.ctrlKey && e.key === 'z') {
-      history.undo(canvas, canvas.getContext('2d'));
+      history.undo(canvas.getContext('2d'));
     }
     if (e.ctrlKey && e.key === 'y') {
-      history.redo(canvas, canvas.getContext('2d'))
+      history.redo(canvas.getContext('2d'))
     }
   }
 
@@ -150,16 +145,17 @@ const Canvas = () => {
       itemsRef.current.map((el, i) => {
         let ctx = el.getContext('2d')
         let img = new Image()
+        console.log(store.layers[i].src)
         img.src = store.layers[i].src
         img.onload = function () {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-          ctx.drawImage(img, 0, 0, el.width, el.height);         
+          ctx.drawImage(img, 0, 0, el.width, el.height);    
         }
       })
 
       if(store.layers[store.activeLayer].visible){
         canvas = itemsRef.current[store.activeLayer]
-        tool = pencil(canvas, state.strokeColor)
+        tool = pencil(canvas.getContext('2d'), state.strokeColor)
         canvasContainer.current.addEventListener("pointermove", tool.onPointerMove)
         canvasContainer.current.addEventListener("pointerdown", tool.onPointerDown)
         window.addEventListener('pointerup', tool.onPointerUp);

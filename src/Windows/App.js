@@ -17,14 +17,12 @@ function initStorePostRender(){
     ctx.fillStyle = "white";
     ctx.fill();
     store.layers[0].src=canvas.toDataURL()
-    canvas.remove()
     globalStore.setStore({dpi:window.devicePixelRatio,layers:store.layers})
 }
 function App(){
     const store = useSelector(store => store)
     const theme=store.settings.theme
     useEffect(()=>{
-        console.log("refresh in app")
         electron.ipcRenderer.on('debug', (event, arg) => {
             console.log(arg)
         });

@@ -16,6 +16,8 @@ const initialState = {
     activeLayer: 0,
     dpi:1,
     layersCount:1,
+    height:400,
+    width:400
 }
 
 const canvas = (state = initialState, action) => {
