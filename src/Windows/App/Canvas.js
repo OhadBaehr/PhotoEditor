@@ -171,14 +171,14 @@ const Canvas = () => {
         }
       }
     }
-  }, [store.activeLayer,store.layersCount,store.dpi])
+  }, [store.activeLayer,store.layersCount,store.dpi])//do not put store.layers as a dependency
 
   const canvasMap = React.useMemo(() => {
     return store.layers.map((_, index) => {
       return <canvas id={store.layers[index].id} className={`canvas ${store.layers[index].visible?'':'hidden'}`} key={`canvas-${store.layers[index].id}-key`} ref={el => itemsRef.current[index] = el} 
        style={{ width: state.canvasWidth, height: state.canvasHeight }} width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi}/>
     })
-  }, [store.activeLayer,store.layersCount,store.dpi])
+  }, [store.activeLayer,store.layersCount,store.dpi,store.layers])
   
   return (
       <div className={`canvas-container`} style={{ minHeight: state.canvasHeight + 100 }} ref={canvasContainer}>
