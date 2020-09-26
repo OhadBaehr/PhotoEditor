@@ -12,7 +12,7 @@ var history = {
     this.redo_list = redo
     this.undo_list = undo
   },
-  saveState: function (ctx, list, keep_redo) {
+  saveState: function (ctx, list) {
     let data
     (list || this.undo_list).push(data= ctx.canvas.toDataURL() );
     return data

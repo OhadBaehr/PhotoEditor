@@ -10,8 +10,6 @@ const initialState = {
         visible: true,
         locked:true,
         id:v1(),
-        undoList: [],
-        redoList: []
     }],
     activeLayer: 0,
     dpi:1,
