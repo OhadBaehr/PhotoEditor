@@ -9,9 +9,9 @@ var history = {
   redo_list: [],
   undo_list: [],
   saveState: function (ctx, list) {
-    console.log("redo",this.redo_list,"undo",this.undo_list)
+    console.log(this.undo_list,this.redo_list)
     let data
-    (list || this.undo_list).push(data= ctx.canvas.toDataURL() );
+    (list || this.undo_list).push({src:data= ctx.canvas.toDataURL(), id:ctx.canvas.id});
     return data
   },
   undo: function (ctx) {
@@ -22,9 +22,19 @@ var history = {
   },
   restoreState: function (ctx, pop, push) {
     if (pop.length) {
-      this.saveState(ctx, push, true);
-      var restore_state = pop.pop();
-      saveActiveLayerImage(restore_state)
+      let index=pop.length-1-pop.slice(0).reverse().findIndex(x => x.id === ctx.canvas.id);
+      if(index!==-1){
+        this.saveState(ctx, push, true);
+        var restore_state = pop.splice(index,1)[0].src;
+        var img = new Image();
+        img.src = restore_state
+        img.onload = function () {
+          ctx.globalCompositeOperation = 'source-over';
+          ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
+        }
+        saveActiveLayerImage(restore_state)
+      }
     }
   }
 }
@@ -86,7 +96,7 @@ const pencil = (ctx, strokeColor) => {
         let mouseY = e.clientY - rect.top
         if(mouseX>=0 && mouseX<=rect.width && mouseY>=0 && mouseY<=rect.height){
           isDrawing = true;
-          img.src = history.saveState(ctx,null);
+          img.src = history.saveState(ctx);
           draw(e)
         }
       }
@@ -161,7 +171,7 @@ const Canvas = () => {
 
   const canvasMap = React.useMemo(() => {
     return store.layers.map((_, index) => {
-      return <canvas className={`canvas ${store.layers[index].visible?'':'hidden'}`} key={`canvas-${store.layers[index].id}-key`} ref={el => itemsRef.current[index] = el} 
+      return <canvas id={store.layers[index].id} className={`canvas ${store.layers[index].visible?'':'hidden'}`} key={`canvas-${store.layers[index].id}-key`} ref={el => itemsRef.current[index] = el} 
        style={{ width: state.canvasWidth, height: state.canvasHeight }} width={state.canvasWidth*store.dpi} height={state.canvasHeight*store.dpi}/>
     })
   }, [store.activeLayer,store.layersCount,store.dpi,store.layers])
