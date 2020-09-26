@@ -8,11 +8,8 @@ import globalStore, { saveActiveLayerImage } from '../../Store/StoreFuncs'
 var history = {
   redo_list: [],
   undo_list: [],
-  init: function (redo, undo) {
-    this.redo_list = redo
-    this.undo_list = undo
-  },
   saveState: function (ctx, list) {
+    console.log("redo",this.redo_list,"undo",this.undo_list)
     let data
     (list || this.undo_list).push(data= ctx.canvas.toDataURL() );
     return data
@@ -27,14 +24,6 @@ var history = {
     if (pop.length) {
       this.saveState(ctx, push, true);
       var restore_state = pop.pop();
-      var img = new Image();
-      img.src = restore_state
-      img.onload = function () {
-        ctx.canvas.style.userEvents = "none"
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
-      }
       saveActiveLayerImage(restore_state)
     }
   }
@@ -96,9 +85,8 @@ const pencil = (ctx, strokeColor) => {
         let mouseX = e.clientX - rect.left
         let mouseY = e.clientY - rect.top
         if(mouseX>=0 && mouseX<=rect.width && mouseY>=0 && mouseY<=rect.height){
-          console.log(ctx)
           isDrawing = true;
-          img.src = history.saveState(ctx);
+          img.src = history.saveState(ctx,null);
           draw(e)
         }
       }
@@ -145,7 +133,6 @@ const Canvas = () => {
       itemsRef.current.map((el, i) => {
         let ctx = el.getContext('2d')
         let img = new Image()
-        console.log(store.layers[i].src)
         img.src = store.layers[i].src
         img.onload = function () {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);

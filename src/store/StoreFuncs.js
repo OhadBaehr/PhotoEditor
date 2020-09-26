@@ -34,8 +34,9 @@ function saveActiveLayerImage(newImage) {
 
 function addLayer(layer) {
     let store = globalStore.getState().canvas
+    if(store.layers.length) store.activeLayer = store.activeLayer+1
+    else store.activeLayer=0
     store.layers.splice(store.activeLayer+1, 0, layer);
-    store.activeLayer = store.activeLayer+1
     store.layersCount += 1
     globalStore.setStore(store)
 }
