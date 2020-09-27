@@ -60,9 +60,7 @@ const pencil = (ctx, strokeColor) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     try{
       ctx.drawImage(ctx.img, 0, 0, ctx.canvas.width, ctx.canvas.height);
-    }catch{
-
-    }
+    }catch{} //we cant allow for waiting for the img.onload event as it is too time consuming, we have to handle broken images
     points.push({ x: mouseX, y: mouseY });
     switch (e.buttons) {
       case 1: ctx.globalCompositeOperation = 'source-over';
@@ -116,8 +114,10 @@ const pencil = (ctx, strokeColor) => {
         points.length = 0;
         ctx.globalCompositeOperation = 'source-over'
         let data = ctx.canvas.toDataURL()
-        ctx.img.src = data
-        saveActiveLayerImage(data)
+        if(ctx.img){
+          ctx.img.src = data
+          saveActiveLayerImage(data)
+        }
       }
     },
     onPointerMove: function (e) {
