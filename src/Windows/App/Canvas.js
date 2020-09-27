@@ -90,16 +90,18 @@ const pencil = (ctx, strokeColor) => {
         img.src = history.saveState(ctx);
         ctx.globalCompositeOperation = 'destination-out'
       }else{
-        ctx.img.src = history.saveState(ctx);
         ctx.globalCompositeOperation = 'source-over'
+        ctx.img.src = history.saveState(ctx);
       } 
     } else {
+      if(firstRun)img.src = ctx.canvas.toDataURL()
       ctx.moveTo(points[0].x, points[0].y);
       for (var i = 0; i < points.length; i++) {
         ctx.lineTo(points[i].x, points[i].y);
       }
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.stroke();
+  
     }
   }
   return {
