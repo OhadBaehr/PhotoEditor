@@ -159,7 +159,6 @@ const Canvas = () => {
         img.onload = () => {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
           ctx.drawImage(img, 0, 0, el.width, el.height);
-          console.log('LOADED!!!!!!')
           ctx.img=img
         }
         img.onerror=()=>{

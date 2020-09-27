@@ -127,6 +127,10 @@ function createLayers() {
     webContents.setZoomFactor(1)
   })
 
+  layersWindow.on('focus', () => {
+      mainWindow.focus()
+  })
+
   mainWindowSize=mainWindow.getNormalBounds()
   layersWindowSize=layersWindow.getNormalBounds()
   layersWindow.setPosition(mainWindowSize.width+mainWindowSize.x-layersWindowSize.width-30,mainWindowSize.y+mainWindowSize.height-layersWindowSize.height-40)
@@ -149,6 +153,10 @@ function createTools() {
       enableRemoteModule: true,
       nodeIntegration: true
     },
+  })
+
+  toolsWindow.on('focus', () => {
+    mainWindow.focus()
   })
 
   toolsWindow.loadURL(
