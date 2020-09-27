@@ -9,13 +9,13 @@ import globalStore, { saveActiveLayerImage } from '../../Store/StoreFuncs'
 var history = {
   redo_list: [],
   undo_list: [],
-  saveState: function (ctx, list,keep_redo) {
+  saveState: function (ctx, list, keep_redo) {
     keep_redo = keep_redo || false;
     if (!keep_redo) {
       this.redo_list = [];
     }
     let data
-    (list || this.undo_list).push({ src: data=ctx.canvas.toDataURL(), id: ctx.canvas.id });
+    (list || this.undo_list).push({ src: data = ctx.canvas.toDataURL(), id: ctx.canvas.id });
     return data
   },
   undo: function (ctx) {
@@ -36,7 +36,7 @@ var history = {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
           ctx.globalCompositeOperation = 'source-over';
           ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
-          ctx.img=img
+          ctx.img = img
         }
         img.src = restore_state
         saveActiveLayerImage(restore_state)
@@ -51,6 +51,7 @@ const pencil = (ctx, strokeColor) => {
   ctx.lineJoin = ctx.lineCap = 'round';
   ctx.strokeStyle = "rgba(0,0,0,0.75)"
   let isDrawing, points = [];
+  let img = new Image();
   function draw(e) {
     let rect = ctx.canvas.getBoundingClientRect();
     let mouseX = e.clientX - rect.left
@@ -58,9 +59,10 @@ const pencil = (ctx, strokeColor) => {
     let prevCtxOperation = ctx.globalCompositeOperation
     ctx.globalCompositeOperation = 'source-over';
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    try{
-      ctx.drawImage(ctx.img, 0, 0, ctx.canvas.width, ctx.canvas.height);
-    }catch{} //we cant allow for waiting for the img.onload event as it is too time consuming, we have to handle broken images
+    try {
+      if(prevCtxOperation=== 'source-over' || img.src===null) ctx.drawImage(ctx.img, 0, 0, ctx.canvas.width, ctx.canvas.height);
+      else ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
+    } catch { } //we cant allow for waiting for the img.onload event as it is too time consuming, we have to handle broken images
     points.push({ x: mouseX, y: mouseY });
     switch (e.buttons) {
       case 1: ctx.globalCompositeOperation = 'source-over';
@@ -78,13 +80,17 @@ const pencil = (ctx, strokeColor) => {
       //fixing issues when switching from one ctx composition to another
       ctx.globalCompositeOperation = prevCtxOperation
       ctx.moveTo(points[0].x, points[0].y);
-      for (var i = 0; i < points.length; i++) {
+      for (var i = 1; i < points.length; i++) {
         ctx.lineTo(points[i].x, points[i].y);
       }
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.stroke();
-      ctx.img.src = history.saveState(ctx);
+      if(prevCtxOperation==='source-over')      img.src = history.saveState(ctx);
+      else ctx.img.src = history.saveState(ctx);
       points.length = 0;
+
+      // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      // ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
       prevCtxOperation === 'source-over' ? ctx.globalCompositeOperation = 'destination-out' : ctx.globalCompositeOperation = 'source-over'
     } else {
       ctx.moveTo(points[0].x, points[0].y);
@@ -93,7 +99,7 @@ const pencil = (ctx, strokeColor) => {
       }
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.stroke();
-  }
+    }
   }
   return {
     onPointerDown: function (e) {
@@ -114,7 +120,7 @@ const pencil = (ctx, strokeColor) => {
         points.length = 0;
         ctx.globalCompositeOperation = 'source-over'
         let data = ctx.canvas.toDataURL()
-        if(ctx.img){
+        if (ctx.img) {
           ctx.img.src = data
           saveActiveLayerImage(data)
         }
@@ -159,10 +165,10 @@ const Canvas = () => {
         img.onload = () => {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
           ctx.drawImage(img, 0, 0, el.width, el.height);
-          ctx.img=img
+          ctx.img = img
         }
-        img.onerror=()=>{
-          ctx.img=img
+        img.onerror = () => {
+          ctx.img = img
         }
         img.src = store.layers[i].src
       })
