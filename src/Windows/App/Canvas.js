@@ -52,7 +52,7 @@ const pencil = (ctx, strokeColor) => {
   ctx.strokeStyle = "rgba(0,0,0,0.75)"
   let isDrawing, points = [];
   let img = new Image();
-  function draw(e) {
+  function draw(e,firstRun) {
     let rect = ctx.canvas.getBoundingClientRect();
     let mouseX = e.clientX - rect.left
     let mouseY = e.clientY - rect.top
@@ -76,22 +76,23 @@ const pencil = (ctx, strokeColor) => {
     }
     ctx.scale(dpi, dpi)
     ctx.beginPath();
-    if (prevCtxOperation !== ctx.globalCompositeOperation) {
+    if (!firstRun && prevCtxOperation !== ctx.globalCompositeOperation) {
       //fixing issues when switching from one ctx composition to another
       ctx.globalCompositeOperation = prevCtxOperation
       ctx.moveTo(points[0].x, points[0].y);
-      for (var i = 1; i < points.length; i++) {
+      for (var i = 0; i < points.length; i++) {
         ctx.lineTo(points[i].x, points[i].y);
       }
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.stroke();
-      if(prevCtxOperation==='source-over')      img.src = history.saveState(ctx);
-      else ctx.img.src = history.saveState(ctx);
       points.length = 0;
-
-      // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      // ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
-      prevCtxOperation === 'source-over' ? ctx.globalCompositeOperation = 'destination-out' : ctx.globalCompositeOperation = 'source-over'
+      if(prevCtxOperation==='source-over'){
+        img.src = history.saveState(ctx);
+        ctx.globalCompositeOperation = 'destination-out'
+      }else{
+        ctx.img.src = history.saveState(ctx);
+        ctx.globalCompositeOperation = 'source-over'
+      } 
     } else {
       ctx.moveTo(points[0].x, points[0].y);
       for (var i = 0; i < points.length; i++) {
@@ -110,7 +111,7 @@ const pencil = (ctx, strokeColor) => {
         if (mouseX >= 0 && mouseX <= rect.width && mouseY >= 0 && mouseY <= rect.height) {
           isDrawing = true;
           history.saveState(ctx);
-          draw(e)
+          draw(e,true)
         }
       }
     },
