@@ -133,7 +133,8 @@ function createLayers() {
 
   mainWindowSize=mainWindow.getNormalBounds()
   layersWindowSize=layersWindow.getNormalBounds()
-  layersWindow.setPosition(mainWindowSize.width+mainWindowSize.x-layersWindowSize.width-30,mainWindowSize.y+mainWindowSize.height-layersWindowSize.height-40)
+  layersWindow.setPosition(mainWindowSize.width+mainWindowSize.x-layersWindowSize.width-25,
+    mainWindowSize.y+mainWindowSize.height-layersWindowSize.height-30)
 }
 
 let toolsWindow
@@ -170,14 +171,54 @@ function createTools() {
 
   mainWindowSize=mainWindow.getNormalBounds()
   toolsWindowSize=toolsWindow.getNormalBounds()
-  toolsWindow.setPosition(mainWindowSize.x+30,mainWindowSize.y+mainWindowSize.height-toolsWindowSize.height-40)
+  toolsWindow.setPosition(mainWindowSize.x+25,mainWindowSize.y+mainWindowSize.height-toolsWindowSize.height-40)
 }
 
+
+let colorPickerWindow
+function createColorPicker() {
+  colorPickerWindow = new BrowserWindow({
+    transparent: true,
+    frame: false,
+    width: 160,
+    minWidth:160,
+    height: 200,
+    minHeight:200,
+    type: 'toolbar',
+    parent:mainWindow,
+    webPreferences: {
+      worldSafeExecuteJavaScript: true,
+      enableRemoteModule: true,
+      nodeIntegration: true
+    },
+  })
+
+  colorPickerWindow.loadURL(
+    process.env.ELECTRON_START_URL + '?ColorPicker'
+  )
+  let webContents = colorPickerWindow.webContents
+  webContents.on('did-finish-load', () => {
+    webContents.setZoomFactor(1)
+    colorPickerWindow.openDevTools()
+  })
+
+  // colorPickerWindow.on('focus', () => {
+  //     mainWindow.focus()
+  // })
+
+  mainWindowSize=mainWindow.getNormalBounds()
+  colorPickerWindowSize=colorPickerWindow.getNormalBounds()
+  colorPickerWindow.setPosition(mainWindowSize.width+mainWindowSize.x-colorPickerWindowSize.width-25,
+    mainWindowSize.y+70)
+}
+
+
 app.on('ready', ()=>{
+  setupStore()
   createWindow()
   createLayers()
   createTools()
-  setupStore()
+  createColorPicker()
 })
 
 app.on('window-all-closed', () => {

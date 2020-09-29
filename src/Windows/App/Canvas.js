@@ -25,6 +25,7 @@ var history = {
     this.restoreState(ctx, this.redo_list, this.undo_list);
   },
   restoreState: function (ctx, pop, push) {
+    console.log(this.undo_list,this.redo_list)
     if (pop.length) {
       let index = pop.slice(0).reverse().findIndex(x => x.id === ctx.canvas.id);
       if (index !== -1) {
@@ -94,7 +95,7 @@ const pencil = (ctx, strokeColor) => {
         ctx.img.src = history.saveState(ctx);
       } 
     } else {
-      if(firstRun)img.src = ctx.canvas.toDataURL()
+      if(firstRun && ctx.globalCompositeOperation === 'destination-out')img.src = ctx.canvas.toDataURL()
       ctx.moveTo(points[0].x, points[0].y);
       for (var i = 0; i < points.length; i++) {
         ctx.lineTo(points[i].x, points[i].y);
