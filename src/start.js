@@ -181,10 +181,10 @@ function createColorPicker() {
   colorPickerWindow = new BrowserWindow({
     transparent: true,
     frame: false,
-    width: 160,
-    minWidth:160,
-    height: 200,
-    minHeight:200,
+    width: 205,
+    minWidth:205,
+    height: 220,
+    minHeight:220,
     type: 'toolbar',
     parent:mainWindow,
     webPreferences: {

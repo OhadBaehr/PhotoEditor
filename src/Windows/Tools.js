@@ -23,14 +23,13 @@ const Tools = () => {
             <div className={`icons-container`}>
                 <IoMdColorWand className={`tools-icon`}/>
                 <BiScreenshot className={`tools-icon`}/>
+                <CgBandAid className={`tools-icon`}/>
+                <FaStamp className={`tools-icon`}/>
                 <BiEraser className={`tools-icon`}/>
                 <IoIosBrush className={`tools-icon`}/>
                 
                 <ImEyedropper className={`tools-icon`}/>
                 <CgColorBucket className={`tools-icon`}/>
-               
-                <CgBandAid className={`tools-icon`}/>
-                <FaStamp className={`tools-icon`}/>
 
                 <BiFontFamily className={`tools-icon`}/>
                 <BiCircle className={`tools-icon`}/>
@@ -39,9 +38,8 @@ const Tools = () => {
             </div>
             <div className={`stroke-colors-container`}>
                 <BsArrow90DegLeft className={`arrow90deg`}/>
-                {console.log(store.tools.colors.primary)}
-                <div className={`primary-color`} style={{background:store.tools.colors.primary}}></div>
                 <div className={`secondary-color`} style={{background:store.tools.colors.secondary}}></div>
+                <div className={`primary-color`} style={{background:store.tools.colors.primary}}></div>
             </div>
         </div>
         </div>
