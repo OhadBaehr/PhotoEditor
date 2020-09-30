@@ -166,6 +166,7 @@ function createTools() {
   let webContents = toolsWindow.webContents
   webContents.on('did-finish-load', () => {
     webContents.setZoomFactor(1)
+    toolsWindow.openDevTools()
   })
 
 

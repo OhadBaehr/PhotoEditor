@@ -2,9 +2,11 @@ const {createStore,combineReducers,compose,applyMiddleware} = require('redux')
 const { forwardToRenderer, triggerAlias, replayActionMain,forwardToMain,replayActionRenderer } = require ('electron-redux');
 const {canvas} = require ('./reducers/canvasStore')
 const {settings} = require ('./reducers/settingsStore')
+const {tools} = require ('./reducers/toolsStore')
 const rootReducer = combineReducers({
     canvas,
-    settings
+    settings,
+    tools
 })
 
 const configureStore = (initialState,scope='main')=>{

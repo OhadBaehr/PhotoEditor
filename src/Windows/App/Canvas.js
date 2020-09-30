@@ -50,7 +50,7 @@ const pencil = (ctx, strokeColor) => {
   let dpi = globalStore.getState().canvas.dpi
   ctx.lineWidth = 20;
   ctx.lineJoin = ctx.lineCap = 'round';
-  ctx.strokeStyle = "rgba(0,0,0,0.75)"
+  ctx.strokeStyle = "black"
   let isDrawing, points = [];
   let img = new Image();
   function draw(e,firstRun) {
@@ -108,6 +108,8 @@ const pencil = (ctx, strokeColor) => {
   return {
     onPointerDown: function (e) {
       if (e.width === 1) {
+        let tools=globalStore.getState().tools
+        ctx.strokeStyle = tools.colors[tools.colors.activeColor]
         let rect = ctx.canvas.getBoundingClientRect();
         let mouseX = e.clientX - rect.left
         let mouseY = e.clientY - rect.top

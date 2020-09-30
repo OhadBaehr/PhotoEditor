@@ -1,6 +1,6 @@
 import React from 'react'
 import './ColorPicker.less'
-
+import globalStore from '../Store/StoreFuncs'
 
 var Picker = function (options) {
     /* convert to RGBA */
@@ -99,7 +99,9 @@ var Picker = function (options) {
             r = [v, q, p, p, t, v][i];
             g = [t, v, v, q, p, p][i];
             b = [p, p, t, v, v, q][i];
-
+            if (r===undefined) r = 0
+            if (g===undefined) g = 0
+            if (b===undefined) b = 0
             return {
                 r: Math.floor(r * 255),
                 g: Math.floor(g * 255),
@@ -191,6 +193,9 @@ const ColorPicker = () => {
         if (picker.on_change) {
             picker.on_change(picker.color);
         }
+        let colors=globalStore.getState().tools.colors
+        colors[colors.activeColor]=picker.color.rgba().toString();
+        globalStore.setStore({colors})
     };
 
     function update_selector_hue() {
@@ -256,7 +261,7 @@ const ColorPicker = () => {
             clearTimeout(preTimeOut);
             preTimeOut = setTimeout(function () {
                 wait = false;
-            }, 60);
+            }, 50);
         };
 
 
@@ -269,7 +274,7 @@ const ColorPicker = () => {
             clearTimeout(preTimeOut);
             preTimeOut = setTimeout(function () {
                 wait = false;
-            }, 60);
+            }, 50);
         };
 
 
@@ -281,7 +286,7 @@ const ColorPicker = () => {
             clearTimeout(preTimeOut);
             preTimeOut = setTimeout(function () {
                 wait = false;
-            }, 60);
+            }, 50);
         };
 
 

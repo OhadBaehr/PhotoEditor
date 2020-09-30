@@ -39,8 +39,9 @@ const Tools = () => {
             </div>
             <div className={`stroke-colors-container`}>
                 <BsArrow90DegLeft className={`arrow90deg`}/>
-                <div className={`primary-color`}></div>
-                <div className={`secondary-color`}></div>
+                {console.log(store.tools.colors.primary)}
+                <div className={`primary-color`} style={{background:store.tools.colors.primary}}></div>
+                <div className={`secondary-color`} style={{background:store.tools.colors.secondary}}></div>
             </div>
         </div>
         </div>
