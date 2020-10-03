@@ -14,8 +14,11 @@ var history = {
     if (!keep_redo) {
       this.redo_list = [];
     }
-    let data
-    (list || this.undo_list).push({ src: data = ctx.canvas.toDataURL(), id: ctx.canvas.id });
+    document.body.style.pointerEvents='none'
+    ctx.globalCompositeOperation = 'source-over';
+    let data=ctx.canvas.toDataURL();
+    (list || this.undo_list).push({ src: data , id: ctx.canvas.id });
+    document.body.style.pointerEvents='auto'
     return data
   },
   undo: function (ctx) {
@@ -25,21 +28,13 @@ var history = {
     this.restoreState(ctx, this.redo_list, this.undo_list);
   },
   restoreState: function (ctx, pop, push) {
-    console.log(this.undo_list,this.redo_list)
     if (pop.length) {
       let index = pop.slice(0).reverse().findIndex(x => x.id === ctx.canvas.id);
       if (index !== -1) {
         let backwardsIndex = pop.length - 1 - index
         this.saveState(ctx, push, true);
         var restore_state = pop.splice(backwardsIndex, 1)[0].src;
-        var img = new Image();
-        img.onload = function () {
-          ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-          ctx.globalCompositeOperation = 'source-over';
-          ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
-          ctx.img = img
-        }
-        img.src = restore_state
+        ctx.img.src = restore_state
         saveActiveLayerImage(restore_state)
       }
     }
@@ -51,62 +46,63 @@ const pencil = (ctx, strokeColor) => {
   ctx.lineWidth = 20;
   ctx.lineJoin = ctx.lineCap = 'round';
   ctx.strokeStyle = "black"
+  ctx.shadowColor="red"
   let isDrawing, points = [];
   let img = new Image();
+  let prevCtxOperation = null
   function draw(e,firstRun) {
-    let rect = ctx.canvas.getBoundingClientRect();
-    let mouseX = e.clientX - rect.left
-    let mouseY = e.clientY - rect.top
-    let prevCtxOperation = ctx.globalCompositeOperation
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    try {
-      if(prevCtxOperation=== 'source-over' || img.src===null) ctx.drawImage(ctx.img, 0, 0, ctx.canvas.width, ctx.canvas.height);
-      else ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
-    } catch { } //we cant allow for waiting for the img.onload event as it is too time consuming, we have to handle broken images
-    points.push({ x: mouseX, y: mouseY });
-    switch (e.buttons) {
-      case 1: ctx.globalCompositeOperation = 'source-over';
-        break;
-      case 2:
-      case 3:
-        ctx.globalCompositeOperation = 'destination-out';
-        break;
-      default:
-        break;
-    }
-    ctx.scale(dpi, dpi)
-    ctx.beginPath();
-    if (!firstRun && prevCtxOperation !== ctx.globalCompositeOperation) {
-      //fixing issues when switching from one ctx composition to another
-      ctx.globalCompositeOperation = prevCtxOperation
-      ctx.moveTo(points[0].x, points[0].y);
-      for (var i = 0; i < points.length; i++) {
-        ctx.lineTo(points[i].x, points[i].y);
+    if (e.width === 1) {
+      if (!isDrawing) return;
+      var rect = ctx.canvas.getBoundingClientRect();
+      let mouseX = e.clientX - rect.left
+      let mouseY = e.clientY - rect.top
+      if(!firstRun){
+        prevCtxOperation = ctx.globalCompositeOperation
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.shadowBlur = 0;
+        ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
       }
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.stroke();
-      points.length = 0;
-      if(prevCtxOperation==='source-over'){
+      points.push({ x: mouseX, y: mouseY });
+      ctx.shadowBlur = 15;
+      switch (e.buttons) {
+        case 1: ctx.globalCompositeOperation = 'source-over';
+          break;
+        case 2:
+        case 3:
+          ctx.globalCompositeOperation = 'destination-out';
+          break;
+        default:
+          ctx.globalCompositeOperation = 'source-over';
+          break;
+      }
+      ctx.scale(dpi,dpi)
+      ctx.beginPath();
+      if (!firstRun && prevCtxOperation !== ctx.globalCompositeOperation) {
+        //fixing issues when switching from one ctx composition to another
+        ctx.globalCompositeOperation = prevCtxOperation
+        ctx.moveTo(points[0].x, points[0].y);
+        for (var i = 0; i < points.length; i++) {
+          ctx.lineTo(points[i].x, points[i].y);
+        }
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.stroke();
         img.src = history.saveState(ctx);
-        ctx.globalCompositeOperation = 'destination-out'
-      }else{
-        ctx.globalCompositeOperation = 'source-over'
-        ctx.img.src = history.saveState(ctx);
-      } 
-    } else {
-      if(firstRun && ctx.globalCompositeOperation === 'destination-out')img.src = ctx.canvas.toDataURL()
-      ctx.moveTo(points[0].x, points[0].y);
-      for (var i = 0; i < points.length; i++) {
-        ctx.lineTo(points[i].x, points[i].y);
+        points.length = 0;
+        prevCtxOperation === 'source-over' ? ctx.globalCompositeOperation = 'destination-out' : ctx.globalCompositeOperation = 'source-over'
+      } else {
+        ctx.moveTo(points[0].x, points[0].y);
+        for (var i = 0; i < points.length; i++) {
+          ctx.lineTo(points[i].x, points[i].y);
+        }
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.stroke();
       }
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.stroke();
-  
     }
   }
   return {
     onPointerDown: function (e) {
+      if(e.ctrlKey) return
       if (e.width === 1) {
         let tools=globalStore.getState().tools
         ctx.strokeStyle = tools.colors[tools.colors.activeColor]
@@ -115,7 +111,7 @@ const pencil = (ctx, strokeColor) => {
         let mouseY = e.clientY - rect.top
         if (mouseX >= 0 && mouseX <= rect.width && mouseY >= 0 && mouseY <= rect.height) {
           isDrawing = true;
-          history.saveState(ctx);
+          img.src = history.saveState(ctx);
           draw(e,true)
         }
       }
@@ -153,11 +149,11 @@ const Canvas = () => {
 
   const handleCommands = (e) => {
     console.log("changed")
-    if (e.ctrlKey && e.key === 'z') {
-      history.undo(canvas.getContext('2d'));
-    }
-    else if (e.ctrlKey && e.key === 'y') {
-      history.redo(canvas.getContext('2d'))
+    if (e.ctrlKey) {
+      canvasContainer.current.style.pointerEvents="none"
+      if(e.key === 'z') history.undo(canvas.getContext('2d'));
+      else if(e.key === 'y') history.redo(canvas.getContext('2d'))
+      canvasContainer.current.style.pointerEvents="auto"
     }
   }
 
@@ -170,8 +166,12 @@ const Canvas = () => {
         let img = new Image()
         img.onload = () => {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          document.body.style.pointerEvents='none'
+          ctx.globalCompositeOperation = 'source-over'
+          ctx.shadowBlur=0
           ctx.drawImage(img, 0, 0, el.width, el.height);
           ctx.img = img
+          document.body.style.pointerEvents='auto'
         }
         img.onerror = () => {
           ctx.img = img

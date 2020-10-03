@@ -219,7 +219,7 @@ app.on('ready', ()=>{
   createWindow()
   createLayers()
   createTools()
-  createColorPicker()
+  // createColorPicker()
 })
 
 app.on('window-all-closed', () => {

@@ -2,6 +2,7 @@ import React from 'react'
 import './ColorPicker.less'
 import globalStore from '../Store/StoreFuncs'
 import { TinyColor } from '@ctrl/tinycolor';
+import {ImEyedropper} from 'react-icons/im';
 var Picker = function (options) {
     /* convert to RGBA */
     this.prevTimeout = null
@@ -241,6 +242,10 @@ const ColorPicker = () => {
                     <div className="picker_hue_indicator" ref={picker_hue_indicator_ref}></div>
                 </div>
             </div>
+            <ImEyedropper className={`tools-icon`}/>
+            R<input></input>
+            G<input></input>
+            B<input></input>
         </div>
     )
 }
