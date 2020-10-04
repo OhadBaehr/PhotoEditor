@@ -7,18 +7,20 @@ import { useSelector } from 'react-redux'
 import globalStore, { saveActiveLayerImage } from '../../Store/StoreFuncs'
 
 var history = {
+  actions:[],
   redo_list: [],
   undo_list: [],
+  saveAction: function(action){
+    this.actions.push(action)
+    console.log(this.actions)
+  },
   saveState: function (ctx, list, keep_redo) {
     keep_redo = keep_redo || false;
     if (!keep_redo) {
       this.redo_list = [];
     }
-    document.body.style.pointerEvents='none'
-    ctx.globalCompositeOperation = 'source-over';
     let data=ctx.canvas.toDataURL();
     (list || this.undo_list).push({ src: data , id: ctx.canvas.id });
-    document.body.style.pointerEvents='auto'
     return data
   },
   undo: function (ctx) {
@@ -32,6 +34,8 @@ var history = {
       let index = pop.slice(0).reverse().findIndex(x => x.id === ctx.canvas.id);
       if (index !== -1) {
         let backwardsIndex = pop.length - 1 - index
+        ctx.drawing=false;
+        ctx.points.length=0
         this.saveState(ctx, push, true);
         var restore_state = pop.splice(backwardsIndex, 1)[0].src;
         ctx.img.src = restore_state
@@ -41,29 +45,28 @@ var history = {
   }
 }
 
-const pencil = (ctx, strokeColor) => {
+const pencil = (ctx) => {
   let dpi = globalStore.getState().canvas.dpi
   ctx.lineWidth = 20;
   ctx.lineJoin = ctx.lineCap = 'round';
   ctx.strokeStyle = "black"
   ctx.shadowColor="red"
-  let isDrawing, points = [];
   let img = new Image();
   let prevCtxOperation = null
   function draw(e,firstRun) {
     if (e.width === 1) {
-      if (!isDrawing) return;
+      if (!ctx.drawing) return;
       var rect = ctx.canvas.getBoundingClientRect();
       let mouseX = e.clientX - rect.left
       let mouseY = e.clientY - rect.top
       if(!firstRun){
-        prevCtxOperation = ctx.globalCompositeOperation
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.shadowBlur = 0;
+        prevCtxOperation = ctx.globalCompositeOperation
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.globalCompositeOperation = 'source-over';
         ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
       }
-      points.push({ x: mouseX, y: mouseY });
+      ctx.points.push({ x: mouseX, y: mouseY });
       ctx.shadowBlur = 15;
       switch (e.buttons) {
         case 1: ctx.globalCompositeOperation = 'source-over';
@@ -81,19 +84,20 @@ const pencil = (ctx, strokeColor) => {
       if (!firstRun && prevCtxOperation !== ctx.globalCompositeOperation) {
         //fixing issues when switching from one ctx composition to another
         ctx.globalCompositeOperation = prevCtxOperation
-        ctx.moveTo(points[0].x, points[0].y);
-        for (var i = 0; i < points.length; i++) {
-          ctx.lineTo(points[i].x, points[i].y);
+        ctx.moveTo(ctx.points[0].x, ctx.points[0].y);
+        for (var i = 0; i < ctx.points.length; i++) {
+          ctx.lineTo(ctx.points[i].x, ctx.points[i].y);
         }
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.stroke();
         img.src = history.saveState(ctx);
-        points.length = 0;
+        history.saveAction({points:[...ctx.points],tool:{name:'pencil',operation:ctx.globalCompositeOperation}})
+        ctx.points.length = 0;
         prevCtxOperation === 'source-over' ? ctx.globalCompositeOperation = 'destination-out' : ctx.globalCompositeOperation = 'source-over'
       } else {
-        ctx.moveTo(points[0].x, points[0].y);
-        for (var i = 0; i < points.length; i++) {
-          ctx.lineTo(points[i].x, points[i].y);
+        ctx.moveTo(ctx.points[0].x, ctx.points[0].y);
+        for (var i = 0; i < ctx.points.length; i++) {
+          ctx.lineTo(ctx.points[i].x, ctx.points[i].y);
         }
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.stroke();
@@ -110,16 +114,18 @@ const pencil = (ctx, strokeColor) => {
         let mouseX = e.clientX - rect.left
         let mouseY = e.clientY - rect.top
         if (mouseX >= 0 && mouseX <= rect.width && mouseY >= 0 && mouseY <= rect.height) {
-          isDrawing = true;
+          ctx.drawing = true;
+          ctx.points=[]
           img.src = history.saveState(ctx);
           draw(e,true)
         }
       }
     },
     onPointerUp: function (e) {
-      if (e.width === 1 && isDrawing) {
-        isDrawing = false;
-        points.length = 0;
+      if (e.width === 1 && ctx.drawing) {
+        ctx.drawing = false;
+        history.saveAction({points:[...ctx.points],tool:{name:'pencil',operation:ctx.globalCompositeOperation}})
+        ctx.points.length = 0;
         ctx.globalCompositeOperation = 'source-over'
         let data = ctx.canvas.toDataURL()
         if (ctx.img) {
@@ -130,7 +136,6 @@ const pencil = (ctx, strokeColor) => {
     },
     onPointerMove: function (e) {
       if (e.width === 1) {
-        if (!isDrawing) return;
         draw(e)
       }
     },
@@ -141,7 +146,7 @@ const pencil = (ctx, strokeColor) => {
 
 const Canvas = () => {
   const store = useSelector(store => store.canvas)
-  const [state, setState] = useAbuse({ strokeColor: "rgba(0,0,0,0.5)", canvasHeight: 400, canvasWidth: 400 })
+  // const [state, setState] = useAbuse({canvasHeight: 400, canvasWidth: 400 })
   let canvas = null
   const itemsRef = useRef([]);
   let canvasContainer = useRef(null)
@@ -150,10 +155,8 @@ const Canvas = () => {
   const handleCommands = (e) => {
     console.log("changed")
     if (e.ctrlKey) {
-      canvasContainer.current.style.pointerEvents="none"
       if(e.key === 'z') history.undo(canvas.getContext('2d'));
       else if(e.key === 'y') history.redo(canvas.getContext('2d'))
-      canvasContainer.current.style.pointerEvents="auto"
     }
   }
 
@@ -166,11 +169,13 @@ const Canvas = () => {
         let img = new Image()
         img.onload = () => {
           ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          let prevCompositeOperation= ctx.globalCompositeOperation 
           document.body.style.pointerEvents='none'
           ctx.globalCompositeOperation = 'source-over'
           ctx.shadowBlur=0
           ctx.drawImage(img, 0, 0, el.width, el.height);
           ctx.img = img
+          ctx.globalCompositeOperation =prevCompositeOperation
           document.body.style.pointerEvents='auto'
         }
         img.onerror = () => {
@@ -181,7 +186,7 @@ const Canvas = () => {
 
       if (store.layers[store.activeLayer].visible) {
         canvas = itemsRef.current[store.activeLayer]
-        tool = pencil(canvas.getContext('2d'), state.strokeColor)
+        tool = pencil(canvas.getContext('2d'))
         canvasContainer.current.addEventListener("pointermove", tool.onPointerMove)
         canvasContainer.current.addEventListener("pointerdown", tool.onPointerDown)
         window.addEventListener('pointerup', tool.onPointerUp);
@@ -201,13 +206,13 @@ const Canvas = () => {
   const canvasMap = React.useMemo(() => {
     return store.layers.map((_, index) => {
       return <canvas id={store.layers[index].id} className={`canvas ${store.layers[index].visible ? '' : 'hidden'}`} key={`canvas-${store.layers[index].id}-key`} ref={el => itemsRef.current[index] = el}
-        style={{ width: state.canvasWidth, height: state.canvasHeight }} width={state.canvasWidth * store.dpi} height={state.canvasHeight * store.dpi} />
+        style={{ width: store.width, height: store.height }} width={store.width * store.dpi} height={store.height * store.dpi} />
     })
   }, [store.activeLayer, store.layersCount, store.dpi, store.layers])
 
   return (
-    <div className={`canvas-container`} style={{ minHeight: state.canvasHeight + 100 }} ref={canvasContainer}>
-      <div className={`transparent-background`} style={{ width: state.canvasWidth, height: state.canvasHeight }}>
+    <div className={`canvas-container`} style={{ minHeight: store.height + 100 }} ref={canvasContainer}>
+      <div className={`transparent-background`} style={{ width: store.width, height: store.height }}>
         {canvasMap}
       </div>
     </div>
