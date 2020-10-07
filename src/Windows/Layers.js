@@ -11,6 +11,7 @@ import { DragDropContext, Droppable,Draggable } from 'react-beautiful-dnd'
 import {useAbuse} from 'use-abuse'
 import { v1 } from 'uuid';
 import { useSelector } from 'react-redux'
+const electron = window.require("electron")
 
 const Layers = () => {
     const store = useSelector(store => store)
@@ -67,7 +68,7 @@ const Layers = () => {
 
     return (
         <>
-        <div className={`layers-container ${theme}`}>
+        <div className={`layers-container ${theme}`} onMouseLeave={()=>electron.ipcRenderer.send('focus-main-window',null)}>
             <div className={`layers-nav-dummy-scale`}>
             <nav className={`layers-nav `}>
                 <div className={`nav-container`}>

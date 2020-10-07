@@ -14,6 +14,11 @@ ipcMain.on('runCommand', async (event, arg) => {
   event.returnValue = await runCommand(arg);
 });
 
+ipcMain.on('focus-main-window', (event, arg) => {
+  mainWindow.focus()
+});
+
+
 let mainWindow
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -67,6 +72,8 @@ function createWindow() {
     // subWindowsOverlay()
     mainWindow.webContents.send('fullscreen-false', '');
   })
+
+
   // mainWindow.on('enter-full-screen', () => {
   //   subWindowsOverlay()
   // })
@@ -127,9 +134,9 @@ function createLayers() {
     webContents.setZoomFactor(1)
   })
 
-  layersWindow.on('focus', () => {
-      mainWindow.focus()
-  })
+  // layersWindow.on('focus', () => {
+  //     mainWindow.focus()
+  // })
 
   mainWindowSize=mainWindow.getNormalBounds()
   layersWindowSize=layersWindow.getNormalBounds()
@@ -219,7 +226,7 @@ app.on('ready', ()=>{
   createWindow()
   createLayers()
   createTools()
-  // createColorPicker()
+  createColorPicker()
 })
 
 app.on('window-all-closed', () => {

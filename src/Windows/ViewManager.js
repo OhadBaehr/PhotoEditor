@@ -6,7 +6,7 @@ import {
 import App from './App';
 import Layers from './Layers';
 import Tools from './Tools';
-import ColorPicker from './ColorPicker'
+import Swatches from './Swatches'
 class ViewManager extends Component {
 
 
@@ -15,7 +15,7 @@ class ViewManager extends Component {
             App: <App/>,
             Layers: <Layers/>,
             Tools: <Tools/>,
-            ColorPicker: <ColorPicker/>
+            ColorPicker: <Swatches/>
         }
     }
 

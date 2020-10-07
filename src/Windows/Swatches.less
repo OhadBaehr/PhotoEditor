@@ -1,0 +1,26 @@
+.swatches-container {
+    // background: blue;
+    height        : 100vh;
+    display       : flex;
+    flex-direction: column;
+
+    .swatches-nav-dummy-scale {
+        border-radius: 7px 7px 0 0;
+
+        .dark& {
+            border-top  : 2px solid rgb(71, 71, 69);
+            border-left : 2px solid rgb(71, 71, 69);
+            border-right: 2px solid rgb(71, 71, 69);
+        }
+
+        .swatches-nav {
+            width             : 100%;
+            height            : 14px;
+            -webkit-app-region: drag;
+
+            .dark& {
+                background: rgb(71, 71, 69);
+            }
+        }
+    }
+}

@@ -124,7 +124,7 @@ const pencil = (ctx) => {
     onPointerUp: function (e) {
       if (e.width === 1 && ctx.drawing) {
         ctx.drawing = false;
-        history.saveAction({points:[...ctx.points],tool:{name:'pencil',operation:ctx.globalCompositeOperation}})
+        history.saveAction({points:[...ctx.points],tool:{name:'pencil',operation:ctx.globalCompositeOperation, id: ctx.canvas.id}})
         ctx.points.length = 0;
         ctx.globalCompositeOperation = 'source-over'
         let data = ctx.canvas.toDataURL()
